@@ -18,7 +18,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  padding: 15px 25px;
+  padding: 5px 25px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -27,11 +27,30 @@ body {
   z-index: 1000;
 }
 
-.navbar .logo {
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.nav-logo {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.nav-logo:hover {
+  transform: scale(1.05);
+}
+
+.nav-title {
   font-weight: 700;
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  color: #f0b429;
 }
 
 .navbar .hamburger {
@@ -274,11 +293,11 @@ body {
 
 .attendance-summary {
   position: absolute;
-  bottom: 25px;
+  bottom: 150px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.70);
-  padding: 10px 20px;
+  padding: px 20px;
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 500;
@@ -293,7 +312,7 @@ body {
 
 /* ========== Sections ========== */
 section {
-  padding: 100px 20px;
+  padding: 40px 20px 0px;
   max-width: 1000px;
   margin: 0 auto;
   text-align: center;
@@ -391,6 +410,12 @@ section ul {
   animation: modalSlideIn 0.3s ease forwards;
 }
 
+.modal-content h2, .modal-content p {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
 @keyframes modalSlideIn {
   from {
     opacity: 0;
@@ -453,6 +478,7 @@ section ul {
   border-radius: 6px;
   cursor: pointer;
   transition: transform 0.2s ease, background 0.3s ease;
+  font-size: 1.2rem;
 }
 
 .modal-content button[type="submit"]:hover {
@@ -469,3 +495,535 @@ section ul {
   text-align: center;
 }
 
+
+/* ========== Attendance Section ========== */
+.attendance {
+  padding: 25px 20px 50px;
+  text-align: center;
+  background: #111;
+  color: #fff;
+  position: relative;
+}
+
+.attendance h2 {
+  color: #f0b429;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.attendance .subtitle {
+  color: #bbb;
+  margin-bottom: 40px;
+  font-style: italic;
+}
+
+.attendance-lists {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 60px;
+}
+
+.attendance .list {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 25px 35px;
+  border-radius: 10px;
+  min-width: 280px;
+  backdrop-filter: blur(6px);
+  transition: transform 0.3s ease;
+}
+
+.attendance .list:hover {
+  transform: translateY(-5px);
+}
+
+.attendance .list h3 {
+  color: #f0b429;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+}
+
+.attendance .list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.attendance .list li {
+  font-size: 1.1rem;
+  padding: 6px 0;
+  color: #ddd;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.attendance .list li:last-child {
+  border-bottom: none;
+}
+
+.attendance .empty {
+  color: #777;
+  font-style: italic;
+}
+
+.rules ul {
+  list-style: none;
+  padding: 0;
+}
+
+.rules li {
+  text-align: left;
+  font-size: 1.05rem;
+  color: #ddd;
+  line-height: 1.7;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rules li:last-child {
+  border-bottom: none;
+}
+
+/* ===== Previous Winners ===== */
+.winners {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.winners h2 {
+  color: #f0b429;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.winners .subtitle {
+  color: #bbb;
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+.winners-table-wrap {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px;
+  backdrop-filter: blur(6px);
+  overflow-x: auto;
+}
+
+.winners-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 520px;
+}
+
+.winners-table th,
+.winners-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #ddd;
+  text-align: left;
+}
+
+.winners-table thead th {
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.year-link {
+  background: none;
+  border: none;
+  color: #f0b429;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.25s ease, transform 0.2s ease;
+}
+
+.year-link:hover {
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Photo modal */
+.photo-modal {
+  position: relative;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 16px;
+  border-radius: 12px;
+  width: min(92vw, 900px);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.photo-modal img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: contain;
+  max-height: 76vh;
+}
+
+.photo-header {
+  color: #ddd;
+  text-align: left;
+}
+
+.modal .close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.modal .close:hover {
+  color: #f0b429;
+  transform: rotate(90deg);
+}
+
+/* Mobile cards fallback (optional) */
+@media (max-width: 600px) {
+  .winners-table {
+    min-width: 0;
+  }
+}
+
+/* ===== Kickoff Timer ===== */
+.kickoff {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.kickoff h2 {
+  color: #f0b429;
+  font-size: 2rem;
+  margin-bottom: 6px;
+}
+
+.kickoff .subtitle {
+  color: #bbb;
+  font-style: italic;
+  margin: 0px;
+}
+
+.countdown {
+  padding-top: 15px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.time-box {
+  min-width: 90px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 16px 14px;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  transition: transform 0.2s ease;
+}
+
+.time-box:hover {
+  transform: translateY(-3px);
+}
+
+.time-box .num {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.time-box .label {
+  display: block;
+  font-size: 0.70rem;
+  color: #f0b429;
+  margin-top: 4px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.game-time {
+  display: inline-block;
+  background: #f0b429;
+  color: #111;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 24px rgba(240, 180, 41, 0.25);
+  animation: pop 0.9s ease;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Keep headings from hiding under the fixed navbar when scrolled into view */
+#kickoff {
+  scroll-margin-top: 80px;
+}
+
+/* ===== Events Section ===== */
+.events {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.events h2 {
+  color: #f0b429;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.events .subtitle {
+  color: #bbb;
+  margin-bottom: 40px;
+  font-style: italic;
+}
+
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.event-card {
+  display: flex;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 6px solid #f0b429;
+  border-radius: 10px;
+  padding: 16px 20px;
+  text-align: left;
+  backdrop-filter: blur(6px);
+  transition: transform 0.2s ease, border-color 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-2px);
+  border-color: #fff;
+}
+
+.event-date {
+  font-weight: 700;
+  color: #f0b429;
+  margin-right: 16px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.event-body h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.25rem;
+  color: #fff;
+}
+
+.event-location {
+  color: #aaa;
+  font-style: italic;
+  margin: 0 0 8px 0;
+}
+
+.event-details {
+  color: #ddd;
+  margin: 0;
+}
+
+/* Different colors for types */
+.event-card.practice {
+  border-left-color: #00ff88;
+}
+
+.event-card.dinner {
+  border-left-color: #ff7f50;
+}
+
+.event-card.game {
+  border-left-color: #f0b429;
+}
+
+@media (max-width: 600px) {
+  .event-card {
+    flex-direction: column;
+  }
+
+  .event-date {
+    margin: 0 0 10px 0;
+  }
+}
+
+/* ===== Forecast Section ===== */
+.forecast {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.forecast h2 {
+  color: #f0b429;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.forecast-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 20px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.forecast .icon {
+  font-size: 3rem;
+}
+
+.forecast-info {
+  text-align: left;
+}
+
+.forecast .temp {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+}
+
+.forecast .desc {
+  color: #ccc;
+  font-size: 1rem;
+  margin: 4px 0;
+}
+
+.forecast .update-time {
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+}
+
+.forecast .error {
+  color: #ff7f50;
+  font-style: italic;
+}
+
+/* ===== Event Details ===== */
+.details {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.details h2 {
+  color: #f0b429;
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.details-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 25px 30px;
+  backdrop-filter: blur(6px);
+  text-align: left;
+}
+
+.detail-row {
+  
+}
+
+.detail-row h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.detail-row p a {
+  color: #f0b429;
+  text-decoration: none;
+  font-size: 1.05rem;
+}
+
+.details-list li a {
+  color: #f0b429;
+  text-decoration: none;
+  font-size: 1.05rem;
+}
+
+.detail-row p a:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
+.copy-btn {
+  background: none;
+  border: solid 0.5px #f0b429;
+  cursor: pointer;
+  color: #f0b429;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.2s ease, transform 0.2s ease;
+  font-size: 1.1rem;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.details-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.details-list li {
+  color: #ddd;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 10px 0;
+}
+
+.details-list strong {
+  color: #f0b429;
+}

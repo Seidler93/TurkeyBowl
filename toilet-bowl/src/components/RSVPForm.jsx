@@ -55,7 +55,7 @@ export default function RSVPForm({ onClose }) {
         <button className="close" onClick={onClose}>
           ✖
         </button>
-        <h2>RSVP</h2>
+        <h2 className="my-h2">RSVP</h2>
         <form onSubmit={handleSubmit}>
           <input
             value={name}

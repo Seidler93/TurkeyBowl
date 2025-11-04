@@ -161,6 +161,7 @@ export default function Hero({ onRSVPClick }) {
             </button>
           </p>
           <p>9am Kickoff</p>
+          <p>Thanksgiving Day - Nov 27th, 2025</p>
       </div>
 
         <div className="attendance-summary">
