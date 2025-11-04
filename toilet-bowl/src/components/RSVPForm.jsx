@@ -43,8 +43,14 @@ export default function RSVPForm({ onClose }) {
     }
   }
 
+  const handleOverlayClick = (e) => {
+    if (e.target.classList.contains("modal")) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="modal">
+    <div className="modal" onClick={handleOverlayClick}>
       <div className="modal-content">
         <button className="close" onClick={onClose}>
           ✖
