@@ -11,7 +11,7 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <div className="nav-left">
+      <div className="nav-left" onClick={() => scrollTo("rsvp")}>
         <img src={logo} alt="Toilet Bowl Logo" className="nav-logo" />
         <span className="nav-title">Toilet Bowl</span>
       </div>      

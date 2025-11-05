@@ -1027,3 +1027,26 @@ section ul {
 .details-list strong {
   color: #f0b429;
 }
+
+.location-btn {
+  background: none !important;
+  border: solid 0.5px #f0b429 !important;
+  cursor: pointer;
+  color: #f0b429;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px !important;
+  border-radius: 6px;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.location-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.location-btn svg {
+  stroke: #f0b429;
+  transition: transform 0.3s ease, stroke 0.3s ease;
+}
