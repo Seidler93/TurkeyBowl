@@ -37,13 +37,26 @@ export default function Events() {
         {events.map((ev, i) => (
           <div className={`event-card ${ev.type}`} key={i}>
             <div className="event-date">{formatDate(ev.date)}</div>
+
             <div className="event-body">
               <h3>{ev.title}</h3>
               <p className="event-location">{ev.location}</p>
               <p className="event-details">{ev.details}</p>
+
+              {ev.address && (
+                <a
+                  className="event-address"
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {ev.address}
+                </a>
+              )}
             </div>
           </div>
         ))}
+
       </div>
     </section>
   );
