@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { getImages } from "../utils/getImages";
 import { db } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
-import RSVPForm from "./RSVPForm";
 
 export default function Hero({ onRSVPClick }) {
   const [backgrounds, setBackgrounds] = useState([]);
@@ -12,6 +11,11 @@ export default function Hero({ onRSVPClick }) {
   const [nextLoaded, setNextLoaded] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [counts, setCounts] = useState({ playing: 0, watching: 0 });
+
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    setOpen(false);
+  };
 
   // Load and preload all images once
   useEffect(() => {
@@ -101,7 +105,7 @@ export default function Hero({ onRSVPClick }) {
   }
 
   return (
-    <section className="hero-container">
+    <section className="hero-container" id="rsvp">
       {/* Base image */}
       <div
         className="hero-bg"
@@ -120,51 +124,52 @@ export default function Hero({ onRSVPClick }) {
         />
       )}
 
-      <div className="hero-overlay">
-      <div className="hero-title">
-        <h1>Toilet Bowl 2025</h1>
-          <button className="rsvp-btn" onClick={onRSVPClick}>RSVP Now</button>
-        {/* {showForm && <RSVPForm onClose={() => setShowForm(false)} />} */}
-          <p>Newton Park</p>
-          <p className="address">
-            <a
-              href="https://www.google.com/maps/search/?api=1&query=707+Fairview+Ave,+Glen+Ellyn,+IL+60137"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              707 Fairview Ave, Glen Ellyn, IL 60137
-            </a>
-            <button
-              className="copy-btn"
-              onClick={() => {
-                navigator.clipboard.writeText("707 Fairview Ave, Glen Ellyn, IL 60137");
-                const icon = document.querySelector(".copy-btn svg");
-                icon.classList.add("copied");
-                setTimeout(() => icon.classList.remove("copied"), 800);
-              }}
-              aria-label="Copy address"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+      <div className="hero-overlay" >
+        <div className="hero-title">
+          <h1>Toilet Bowl 2025</h1>
+            <button className="rsvp-btn" onClick={onRSVPClick}>RSVP Now</button>
+          {/* {showForm && <RSVPForm onClose={() => setShowForm(false)} />} */}
+            <p>Newton Park</p>
+            <p className="address">
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=707+Fairview+Ave,+Glen+Ellyn,+IL+60137"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-            </button>
-          </p>
-          <p>9am Kickoff</p>
-          <p>Thanksgiving Day - Nov 27th, 2025</p>
-      </div>
+                707 Fairview Ave, Glen Ellyn, IL 60137
+              </a>
+              <button
+                className="location-btn"
+                onClick={() => {
+                  window.open(
+                    "https://www.google.com/maps/search/?api=1&query=707+Fairview+Ave,+Glen+Ellyn,+IL+60137",
+                    "_blank"
+                  );
+                }}
+                aria-label="Open location in Google Maps"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 1 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+              </button>
 
-        <div className="attendance-summary">
+            </p>
+            <p>9am Kickoff</p>
+            <p>Thanksgiving Day - Nov 27th, 2025</p>
+        </div>
+
+        <div className="attendance-summary" onClick={() => scrollTo("attendance")}>
           <p>
             <strong>{counts.playing}</strong> Playing •{" "}
             <strong>{counts.watching}</strong> Watching
