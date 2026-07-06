@@ -1,0 +1,19 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "galleryIndex",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "timeline",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "sortOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

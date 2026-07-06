@@ -1,4 +1,3 @@
-// src/components/PreviousWinners.jsx
 import { useEffect, useState } from "react";
 import { db, collection, getDocs } from "../firebase";
 import { storage } from "../firebase";
@@ -6,7 +5,7 @@ import { getDownloadURL, ref } from "firebase/storage";
 
 export default function PreviousWinners() {
   const [rows, setRows] = useState([]);
-  const [selected, setSelected] = useState(null); // {year, team, score, photoUrl}
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     const fetchWinners = async () => {
@@ -39,7 +38,7 @@ export default function PreviousWinners() {
   return (
     <section id="winners" className="winners">
       <h2>Previous Winners</h2>
-      <p className="subtitle">Tap a year to view that year’s squad photo.</p>
+      <p className="subtitle">Tap a year to view that year's squad photo.</p>
 
       <div className="winners-table-wrap">
         <table className="winners-table">
@@ -74,13 +73,12 @@ export default function PreviousWinners() {
         </table>
       </div>
 
-      {/* Photo Modal */}
       {selected && (
         <div className="modal" onClick={() => setSelected(null)}>
           <div className="photo-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="close" onClick={() => setSelected(null)}>×</button>
+            <button className="close" onClick={() => setSelected(null)}>x</button>
             <div className="photo-header">
-              <strong>{selected.year}</strong> • {selected.team} • {selected.score}
+              <strong>{selected.year}</strong> | {selected.team} | {selected.score}
             </div>
             <img src={selected.photoUrl} alt={`${selected.year} winners`} />
           </div>

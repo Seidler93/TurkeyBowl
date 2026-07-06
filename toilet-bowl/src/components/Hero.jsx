@@ -9,20 +9,12 @@ export default function Hero({ onRSVPClick }) {
   const [next, setNext] = useState(1);
   const [fade, setFade] = useState(false);
   const [nextLoaded, setNextLoaded] = useState(false);
-  const [showForm, setShowForm] = useState(false);
   const [counts, setCounts] = useState({ playing: 0, watching: 0 });
 
-  const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    setOpen(false);
-  };
-
-  // Load and preload all images once
   useEffect(() => {
     async function loadBackgrounds() {
       const urls = await getImages("backgrounds");
 
-      // preload all
       await Promise.all(
         urls.map(
           (url) =>
@@ -41,31 +33,24 @@ export default function Hero({ onRSVPClick }) {
     loadBackgrounds();
   }, []);
 
-  // preload next image dynamically before fade
   useEffect(() => {
     if (backgrounds.length === 0) return;
 
-    const preloadNext = (index) => {
-      const img = new Image();
-      img.src = backgrounds[index];
-      img.onload = () => setNextLoaded(true);
-      img.onerror = () => setNextLoaded(true);
-    };
-
-    preloadNext((active + 1) % backgrounds.length);
+    const img = new Image();
+    img.src = backgrounds[(active + 1) % backgrounds.length];
+    img.onload = () => setNextLoaded(true);
+    img.onerror = () => setNextLoaded(true);
   }, [active, backgrounds]);
 
-  // cycle images once next image is loaded
   useEffect(() => {
     if (backgrounds.length === 0 || !nextLoaded) return;
 
     const interval = setInterval(() => {
       setFade(true);
 
-      // wait for fade-in to complete
       setTimeout(() => {
         setActive((prev) => (prev + 1) % backgrounds.length);
-        setNextLoaded(false); // reset for next preload
+        setNextLoaded(false);
         setFade(false);
       }, 1200);
     }, 5000);
@@ -73,12 +58,10 @@ export default function Hero({ onRSVPClick }) {
     return () => clearInterval(interval);
   }, [backgrounds, nextLoaded]);
 
-  // track next index separately
   useEffect(() => {
     setNext((active + 1) % backgrounds.length);
   }, [active, backgrounds]);
 
-  // Attendance listener
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "rsvps"), (snapshot) => {
       let playing = 0;
@@ -97,7 +80,7 @@ export default function Hero({ onRSVPClick }) {
     return (
       <section className="hero">
         <div className="overlay">
-          <h1>Toilet Bowl 2025</h1>
+          <h1>Toilet Bowl 2026</h1>
           <p>Loading the action...</p>
         </div>
       </section>
@@ -106,7 +89,6 @@ export default function Hero({ onRSVPClick }) {
 
   return (
     <section className="hero-container" id="rsvp">
-      {/* Base image */}
       <div
         className="hero-bg"
         style={{
@@ -114,7 +96,6 @@ export default function Hero({ onRSVPClick }) {
         }}
       />
 
-      {/* Fade layer only shows once image is fully preloaded */}
       {nextLoaded && (
         <div
           className={`hero-bg fade-layer ${fade ? "visible" : ""}`}
@@ -124,57 +105,58 @@ export default function Hero({ onRSVPClick }) {
         />
       )}
 
-      <div className="hero-overlay" >
+      <div className="hero-overlay">
         <div className="hero-title">
-          <h1>Toilet Bowl 2025</h1>
-            <button className="rsvp-btn" onClick={onRSVPClick}>RSVP Now</button>
-          {/* {showForm && <RSVPForm onClose={() => setShowForm(false)} />} */}
-            <p>Newton Park</p>
-            <p className="address">
-              <a
-                href="https://www.google.com/maps/search/?api=1&query=707+Fairview+Ave,+Glen+Ellyn,+IL+60137"
-                target="_blank"
-                rel="noopener noreferrer"
+          <h1>Toilet Bowl 2026</h1>
+          <button className="rsvp-btn" onClick={onRSVPClick}>RSVP Now</button>
+          <p>Newton Park</p>
+          <p className="address">
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=707+Fairview+Ave,+Glen+Ellyn,+IL+60137"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              707 Fairview Ave, Glen Ellyn, IL 60137
+            </a>
+            <button
+              className="location-btn"
+              onClick={() => {
+                window.open(
+                  "https://www.google.com/maps/search/?api=1&query=707+Fairview+Ave,+Glen+Ellyn,+IL+60137",
+                  "_blank"
+                );
+              }}
+              aria-label="Open location in Google Maps"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                707 Fairview Ave, Glen Ellyn, IL 60137
-              </a>
-              <button
-                className="location-btn"
-                onClick={() => {
-                  window.open(
-                    "https://www.google.com/maps/search/?api=1&query=707+Fairview+Ave,+Glen+Ellyn,+IL+60137",
-                    "_blank"
-                  );
-                }}
-                aria-label="Open location in Google Maps"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 1 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-              </button>
-
-            </p>
-            <p>9am Kickoff</p>
-            <p>Thanksgiving Day - Nov 27th, 2025</p>
+                <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 1 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </button>
+          </p>
+          <p>9am Kickoff</p>
+          <p>Thanksgiving Day - Thursday, November 26, 2026</p>
         </div>
 
-        <div className="attendance-summary" onClick={() => scrollTo("attendance")}>
+        <button
+          className="attendance-summary"
+          onClick={() => document.getElementById("attendance")?.scrollIntoView({ behavior: "smooth" })}
+        >
           <p>
-            <strong>{counts.playing}</strong> Playing •{" "}
+            <strong>{counts.playing}</strong> Playing |{" "}
             <strong>{counts.watching}</strong> Watching
           </p>
-        </div>
+        </button>
       </div>
     </section>
   );

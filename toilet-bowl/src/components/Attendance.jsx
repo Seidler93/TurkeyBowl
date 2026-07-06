@@ -25,7 +25,7 @@ export default function Attendance() {
     <section id="attendance" className="attendance">
       <h2>Attendance</h2>
       <p className="subtitle">
-        Who’s showing up to the <strong>Toilet Bowl 2025</strong>?
+        Who's showing up to the <strong>Toilet Bowl 2026</strong>?
       </p>
 
       <div className="attendance-lists">

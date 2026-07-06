@@ -6,7 +6,7 @@ export default function Rules() {
         <li>8v8</li>
         <li>Ball must be snapped.</li>
         <li>Any fumble is a dead ball.</li>
-        <li>Running plays allowd.</li>
+        <li>Running plays allowed.</li>
         <li>Unlimited blitzing/rushers after ball is snapped.</li>
         <li>Kick off/punt after scores.</li>
         <li>NFL Scoring</li>

@@ -1,4 +1,3 @@
-// src/components/KickoffTimer.jsx
 import { useEffect, useMemo, useState } from "react";
 
 function getTimeParts(ms) {
@@ -12,10 +11,8 @@ function getTimeParts(ms) {
 }
 
 export default function KickoffTimer() {
-  // 🗓 Set your kickoff here (Central Time for Glen Ellyn, IL @ 9:00 AM)
-  // Thanksgiving 2025 is Nov 27. Adjust if needed.
   const targetDate = useMemo(
-    () => new Date("2025-11-27T09:00:00-06:00"),
+    () => new Date("2026-11-26T09:00:00-06:00"),
     []
   );
 
@@ -36,8 +33,8 @@ export default function KickoffTimer() {
   return (
     <section id="kickoff" className="kickoff">
       <h2>Kickoff Countdown</h2>
-      <p className="subtitle">Newton Park • 9:00 AM</p>
-      <p className="subtitle">Nov 27th, 2025</p>
+      <p className="subtitle">Newton Park | 9:00 AM</p>
+      <p className="subtitle">Thursday, November 26, 2026</p>
 
       {!isLive ? (
         <div className="countdown">
@@ -59,7 +56,7 @@ export default function KickoffTimer() {
           </div>
         </div>
       ) : (
-        <div className="game-time">It’s Game Time! 🏈</div>
+        <div className="game-time">It's Game Time!</div>
       )}
     </section>
   );
