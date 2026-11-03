@@ -1,59 +1,61 @@
 import { useEffect, useMemo, useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 import useGameYear from "../utils/useGameYear";
-
-const samplePlayers = [
-  { id: "sample-1", name: "Alex Morgan", blurb: "Reliable hands, questionable route names." },
-  { id: "sample-2", name: "Ben Carter", blurb: "Shows up early and talks like a coach by halftime." },
-  { id: "sample-3", name: "Chris Reynolds", blurb: "Deep threat until the second plate of food." },
-  { id: "sample-4", name: "Drew Parker", blurb: "Built for short-yardage chaos and big celebrations." },
-  { id: "sample-5", name: "Evan Brooks", blurb: "Claims every throw was catchable. Usually smiling." },
-  { id: "sample-6", name: "Jordan Hayes", blurb: "Defense first, highlights second, excuses never." },
-  { id: "sample-7", name: "Kai Mitchell", blurb: "Can turn a broken play into a family story." },
-  { id: "sample-8", name: "Logan Price", blurb: "Quiet before kickoff, loud after one good catch." },
-  { id: "sample-9", name: "Mason Lee", blurb: "Plays through soreness, hunger, and questionable calls." },
-  { id: "sample-10", name: "Sam Bennett", blurb: "Veteran energy with rookie-level stretching discipline." },
-];
 
 export default function PlayersPage() {
   const gameYear = useGameYear();
   const yearOptions = Array.from({ length: gameYear - 2024 + 1 }, (_, index) => gameYear - index);
   const [yearChoice, setYearChoice] = useState(null);
   const selectedYear = yearChoice ?? gameYear;
-  const [players, setPlayers] = useState([]);
+  const [attendees, setAttendees] = useState([]);
+  const [profiles, setProfiles] = useState([]);
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadPlayers() {
-      setLoading(true);
-
-      try {
-        const playersQuery = query(
-          collection(db, "playersIndex"),
-          where("year", "==", Number(selectedYear))
-        );
-        const snap = await getDocs(playersQuery);
-        const rows = snap.docs
-          .map((playerDoc) => ({ id: playerDoc.id, ...playerDoc.data() }))
-          .sort((a, b) => (a.name || "").localeCompare(b.name || ""));
-        setPlayers(rows);
-      } catch (error) {
-        console.error("Failed to load players:", error);
-        setPlayers([]);
-      } finally {
+    setLoading(true);
+    setError("");
+    setAttendees([]);
+    setProfiles([]);
+    const unsubscribeAttendance = onSnapshot(
+      query(collection(db, "rsvps"), where("year", "==", selectedYear)),
+      (snapshot) => {
+        setAttendees(snapshot.docs.map((entry) => ({ ...entry.data(), id: entry.id })));
+        setLoading(false);
+      },
+      (loadError) => {
+        console.error("Failed to load attendance:", loadError);
+        setError("Could not load this year's roster. Please try again later.");
         setLoading(false);
       }
-    }
-
-    loadPlayers();
+    );
+    const unsubscribeProfiles = onSnapshot(
+      query(collection(db, "playersIndex"), where("year", "==", selectedYear)),
+      (snapshot) => setProfiles(snapshot.docs.map((entry) => entry.data())),
+      (loadError) => {
+        console.error("Failed to load player profiles:", loadError);
+        setProfiles([]);
+      }
+    );
+    return () => {
+      unsubscribeAttendance();
+      unsubscribeProfiles();
+    };
   }, [selectedYear]);
+
+  const players = useMemo(() => {
+    const profilesByRsvp = new Map(profiles.map((profile) => [profile.rsvpId, profile]));
+    return attendees
+      .filter((attendee) => attendee.status === "playing")
+      .map((attendee) => ({ ...profilesByRsvp.get(attendee.id), ...attendee }))
+      .sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+  }, [attendees, profiles]);
 
   const playerCountLabel = useMemo(() => {
     if (loading) return "Loading roster...";
-    if (players.length === 1) return "1 player checked in";
-    if (players.length === 0) return "Sample roster placeholders";
-    return `${players.length} players checked in`;
+    if (players.length === 1) return "1 player signed up";
+    return `${players.length} players signed up`;
   }, [loading, players.length]);
 
   return (
@@ -61,7 +63,7 @@ export default function PlayersPage() {
       <div className="page-header">
         <p className="eyebrow">Toilet Bowl Roster</p>
         <h1>Players</h1>
-        <p>Meet the brave souls suiting up for this year's game.</p>
+        <p>Meet the players signed up for the {selectedYear} game.</p>
       </div>
 
       <div className="gallery-toolbar">
@@ -79,7 +81,7 @@ export default function PlayersPage() {
         </select>
       </div>
 
-      <p className="players-count">{playerCountLabel}</p>
+      <p className="players-count" role="status">{error || playerCountLabel}</p>
 
       {loading ? (
         <div className="players-grid">
@@ -109,25 +111,13 @@ export default function PlayersPage() {
               )}
               <div className="player-info">
                 <h3>{player.name}</h3>
-                <p>{player.blurb}</p>
+                <p>{player.blurb || "Player profile coming soon."}</p>
               </div>
             </article>
           ))}
         </div>
       ) : (
-        <div className="players-grid">
-          {samplePlayers.map((player) => (
-            <article className="player-card player-card-sample" key={player.id}>
-              <div className="player-photo-placeholder">
-                <span>{player.name.charAt(0)}</span>
-              </div>
-              <div className="player-info">
-                <h3>{player.name}</h3>
-                <p>{player.blurb}</p>
-              </div>
-            </article>
-          ))}
-        </div>
+        !error && <p className="empty-gallery">No players have signed up for {selectedYear} yet.</p>
       )}
     </div>
   );
