@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
+import useGameYear from "../utils/useGameYear";
 
-const yearOptions = [2026, 2025, 2024];
 const samplePlayers = [
   { id: "sample-1", name: "Alex Morgan", blurb: "Reliable hands, questionable route names." },
   { id: "sample-2", name: "Ben Carter", blurb: "Shows up early and talks like a coach by halftime." },
@@ -17,7 +17,10 @@ const samplePlayers = [
 ];
 
 export default function PlayersPage() {
-  const [selectedYear, setSelectedYear] = useState(2026);
+  const gameYear = useGameYear();
+  const yearOptions = Array.from({ length: gameYear - 2024 + 1 }, (_, index) => gameYear - index);
+  const [yearChoice, setYearChoice] = useState(null);
+  const selectedYear = yearChoice ?? gameYear;
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -66,7 +69,7 @@ export default function PlayersPage() {
         <select
           id="players-year"
           value={selectedYear}
-          onChange={(e) => setSelectedYear(Number(e.target.value))}
+          onChange={(e) => setYearChoice(Number(e.target.value))}
         >
           {yearOptions.map((year) => (
             <option key={year} value={year}>

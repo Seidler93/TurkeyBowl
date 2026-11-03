@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
-import { db, collection, getDocs } from "../firebase";
+import { db, collection } from "../firebase";
+import { onSnapshot, query, where } from "firebase/firestore";
+import useGameYear from "../utils/useGameYear";
 
 export default function Attendance() {
+  const year = useGameYear();
   const [attendees, setAttendees] = useState([]);
 
   useEffect(() => {
-    const fetchRSVPs = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "rsvps"));
+    return onSnapshot(
+      query(collection(db, "rsvps"), where("year", "==", year)),
+      (querySnapshot) => {
         const rsvpList = querySnapshot.docs.map((doc) => doc.data());
         setAttendees(rsvpList);
-      } catch (error) {
+      },
+      (error) => {
         console.error("Error fetching RSVPs:", error);
       }
-    };
-
-    fetchRSVPs();
-  }, []);
+    );
+  }, [year]);
 
   const players = attendees.filter((a) => a.status === "playing");
   const watchers = attendees.filter((a) => a.status === "watching");
@@ -25,7 +27,7 @@ export default function Attendance() {
     <section id="attendance" className="attendance">
       <h2>Attendance</h2>
       <p className="subtitle">
-        Who's showing up to the <strong>Toilet Bowl 2026</strong>?
+        Who's showing up to the <strong>Toilet Bowl {year}</strong>?
       </p>
 
       <div className="attendance-lists">

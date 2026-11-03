@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { getImages } from "../utils/getImages";
 import { db } from "../firebase";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import useGameYear from "../utils/useGameYear";
+import { gameDateLabel } from "../utils/gameYear";
 
 export default function Hero({ onRSVPClick }) {
+  const year = useGameYear();
   const [backgrounds, setBackgrounds] = useState([]);
   const [active, setActive] = useState(0);
   const [next, setNext] = useState(1);
@@ -63,7 +66,7 @@ export default function Hero({ onRSVPClick }) {
   }, [active, backgrounds]);
 
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, "rsvps"), (snapshot) => {
+    const unsub = onSnapshot(query(collection(db, "rsvps"), where("year", "==", year)), (snapshot) => {
       let playing = 0;
       let watching = 0;
       snapshot.docs.forEach((doc) => {
@@ -74,13 +77,13 @@ export default function Hero({ onRSVPClick }) {
       setCounts({ playing, watching });
     });
     return () => unsub();
-  }, []);
+  }, [year]);
 
   if (backgrounds.length === 0) {
     return (
       <section className="hero">
         <div className="overlay">
-          <h1>Toilet Bowl 2026</h1>
+          <h1>Toilet Bowl {year}</h1>
           <p>Loading the action...</p>
         </div>
       </section>
@@ -107,45 +110,31 @@ export default function Hero({ onRSVPClick }) {
 
       <div className="hero-overlay">
         <div className="hero-title">
-          <h1>Toilet Bowl 2026</h1>
-          <button className="rsvp-btn" onClick={onRSVPClick}>RSVP Now</button>
-          <p>Newton Park</p>
-          <p className="address">
-            <a
+          <h1>Toilet Bowl {year}</h1>
+          <button className="rsvp-btn" onClick={onRSVPClick}>RSVP for {year}</button>
+          <dl className="hero-info">
+            <div className="hero-info-row">
+              <dt>When</dt>
+              <dd>{gameDateLabel(year)}<span>Thanksgiving Day</span></dd>
+            </div>
+            <div className="hero-info-row">
+              <dt>Kickoff</dt>
+              <dd>9:00 AM<span>Arrive at 8:30 AM to warm up</span></dd>
+            </div>
+            <div className="hero-info-row">
+              <dt>Where</dt>
+              <dd><a
               href="https://www.google.com/maps/search/?api=1&query=707+Fairview+Ave,+Glen+Ellyn,+IL+60137"
               target="_blank"
               rel="noopener noreferrer"
             >
-              707 Fairview Ave, Glen Ellyn, IL 60137
+              Newton Park
+              <span>707 Fairview Ave</span>
+              <span>Glen Ellyn, IL 60137</span>
             </a>
-            <button
-              className="location-btn"
-              onClick={() => {
-                window.open(
-                  "https://www.google.com/maps/search/?api=1&query=707+Fairview+Ave,+Glen+Ellyn,+IL+60137",
-                  "_blank"
-                );
-              }}
-              aria-label="Open location in Google Maps"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 1 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-            </button>
-          </p>
-          <p>9am Kickoff</p>
-          <p>Thanksgiving Day - Thursday, November 26, 2026</p>
+              </dd>
+            </div>
+          </dl>
         </div>
 
         <button

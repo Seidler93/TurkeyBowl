@@ -1,15 +1,21 @@
 // src/components/Events.jsx
 import { useEffect, useState } from "react";
 import { db, collection, getDocs } from "../firebase";
+import useGameYear from "../utils/useGameYear";
+import { eventDate } from "../utils/eventDate";
 
 export default function Events() {
+  const year = useGameYear();
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const snap = await getDocs(collection(db, "events"));
-        const data = snap.docs.map((d) => d.data());
+        const data = snap.docs.map((d) => {
+          const event = d.data();
+          return { ...event, date: eventDate(event, year) };
+        });
         data.sort((a, b) => new Date(a.date) - new Date(b.date));
         setEvents(data);
       } catch (e) {
@@ -17,10 +23,11 @@ export default function Events() {
       }
     };
     fetchEvents();
-  }, []);
+  }, [year]);
 
   const formatDate = (iso) =>
     new Date(iso).toLocaleString("en-US", {
+      timeZone: "America/Chicago",
       weekday: "short",
       month: "short",
       day: "numeric",

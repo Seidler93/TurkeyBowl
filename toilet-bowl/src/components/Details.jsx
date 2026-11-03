@@ -1,4 +1,8 @@
+import useGameYear from "../utils/useGameYear";
+import { gameDateLabel } from "../utils/gameYear";
+
 export default function Details() {
+  const year = useGameYear();
   return (
     <section id="details" className="details">
       <h2>Event Details</h2>
@@ -12,7 +16,7 @@ export default function Details() {
           >
             707 Fairview Ave, Glen Ellyn, IL 60137
           </a></li>
-          <li><strong>Date:</strong> Thanksgiving Day - Thursday, November 26, 2026</li>
+          <li><strong>Date:</strong> Thanksgiving Day - {gameDateLabel(year)}</li>
           <li><strong>Kickoff time:</strong> Kickoff at 9:00 AM. Plan to arrive around 8:30-8:45 AM to warm up and pick teams.</li>
           <li><strong>Gear:</strong> Cleats and gloves suggested for better traction and grip.</li>
           <li><strong>Seating:</strong> Some benches available, bring a folding chair if you'd like your own spot.</li>

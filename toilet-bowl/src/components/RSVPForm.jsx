@@ -7,11 +7,13 @@ import {
   getDocs,
   serverTimestamp,
   setDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { createThumbnail } from "../utils/createThumbnail";
 
-const PROFILE_YEAR = 2026;
+import useGameYear from "../utils/useGameYear";
 const profileBlurbIdeas = [
   "A high-motor player with reliable hands and deeply unreliable pre-game stretching habits.",
   "Known for clutch catches, loud celebrations, and acting shocked when the defense covers them.",
@@ -35,9 +37,9 @@ function safeFileName(fileName) {
   return `${base || "profile"}${extension.toLowerCase()}`;
 }
 
-function profileIdFor(rsvpId, name) {
+function profileIdFor(rsvpId, name, year) {
   const safeName = name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
-  return `${PROFILE_YEAR}_${safeName || "player"}_${rsvpId}`;
+  return `${year}_${safeName || "player"}_${rsvpId}`;
 }
 
 function generateProfileBlurb(name) {
@@ -49,6 +51,7 @@ function generateProfileBlurb(name) {
 }
 
 export default function RSVPForm({ onClose }) {
+  const year = useGameYear();
   const [name, setName] = useState("");
   const [status, setStatus] = useState("playing");
   const [count, setCount] = useState(0);
@@ -60,9 +63,9 @@ export default function RSVPForm({ onClose }) {
   const rsvpsRef = useMemo(() => collection(db, "rsvps"), []);
 
   const refreshCount = useCallback(async () => {
-    const snap = await getDocs(rsvpsRef);
+    const snap = await getDocs(query(rsvpsRef, where("year", "==", year)));
     setCount(snap.size);
-  }, [rsvpsRef]);
+  }, [rsvpsRef, year]);
 
   useEffect(() => {
     refreshCount();
@@ -79,13 +82,13 @@ export default function RSVPForm({ onClose }) {
         name: trimmedName,
         status,
         createdAt: serverTimestamp(),
-        year: PROFILE_YEAR,
+        year,
       });
 
       await refreshCount();
 
       if (status === "playing") {
-        setSavedRsvp({ id: rsvpDoc.id, name: trimmedName });
+        setSavedRsvp({ id: rsvpDoc.id, name: trimmedName, year });
         setProfileMessage("RSVP saved. Want to add a player profile?");
       } else {
         alert("RSVP saved! See you there!");
@@ -106,11 +109,11 @@ export default function RSVPForm({ onClose }) {
     setProfileSaving(true);
     setProfileMessage("Creating player profile...");
 
-    const profileId = profileIdFor(savedRsvp.id, savedRsvp.name);
+    const profileId = profileIdFor(savedRsvp.id, savedRsvp.name, savedRsvp.year);
     const fullName = safeFileName(profileImage.name);
     const thumbName = fullName.replace(/\.[^.]+$/, ".jpg");
-    const fullPath = `players-full/${PROFILE_YEAR}/${profileId}_${fullName}`;
-    const thumbPath = `players-index/${PROFILE_YEAR}/${profileId}_${thumbName}`;
+    const fullPath = `players-full/${savedRsvp.year}/${profileId}_${fullName}`;
+    const thumbPath = `players-index/${savedRsvp.year}/${profileId}_${thumbName}`;
 
     try {
       const thumbnail = await createThumbnail(profileImage, 480);
@@ -135,7 +138,7 @@ export default function RSVPForm({ onClose }) {
       await setDoc(
         doc(collection(db, "playersIndex"), profileId),
         {
-          year: PROFILE_YEAR,
+          year: savedRsvp.year,
           name: savedRsvp.name,
           status: "playing",
           blurb: profileBlurb.trim(),
@@ -179,7 +182,7 @@ export default function RSVPForm({ onClose }) {
 
         {!savedRsvp ? (
           <>
-            <h2 className="my-h2">RSVP</h2>
+            <h2 className="my-h2">RSVP for {year}</h2>
             <form onSubmit={handleSubmit}>
               <input
                 value={name}

@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import useGameYear from "../utils/useGameYear";
+import { thanksgivingDate, gameDateLabel } from "../utils/gameYear";
 
 function getTimeParts(ms) {
   if (ms < 0) ms = 0;
@@ -11,9 +13,10 @@ function getTimeParts(ms) {
 }
 
 export default function KickoffTimer() {
+  const year = useGameYear();
   const targetDate = useMemo(
-    () => new Date("2026-11-26T09:00:00-06:00"),
-    []
+    () => new Date(`${thanksgivingDate(year)}T09:00:00-06:00`),
+    [year]
   );
 
   const [remaining, setRemaining] = useState(
@@ -34,7 +37,7 @@ export default function KickoffTimer() {
     <section id="kickoff" className="kickoff">
       <h2>Kickoff Countdown</h2>
       <p className="subtitle">Newton Park | 9:00 AM</p>
-      <p className="subtitle">Thursday, November 26, 2026</p>
+      <p className="subtitle">{gameDateLabel(year)}</p>
 
       {!isLive ? (
         <div className="countdown">

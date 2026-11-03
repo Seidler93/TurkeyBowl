@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import useGameYear from "../utils/useGameYear";
+import { thanksgivingDate } from "../utils/gameYear";
 
 const LAT = 41.875;
 const LON = -88.063;
-const GAME_DAY = "2026-11-26";
 
 function formatDisplayDate(dateString) {
   return new Date(`${dateString}T12:00:00`).toLocaleDateString("en-US", {
@@ -61,6 +62,7 @@ async function fetchDailyForecast(dateString) {
 }
 
 export default function Forecast() {
+  const year = useGameYear();
   const [forecast, setForecast] = useState(null);
   const [label, setLabel] = useState("Game day");
   const [error, setError] = useState(null);
@@ -68,7 +70,7 @@ export default function Forecast() {
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        const gameDayForecast = await fetchDailyForecast(GAME_DAY);
+        const gameDayForecast = await fetchDailyForecast(thanksgivingDate(year));
         setForecast(gameDayForecast);
         setLabel("Game day");
         setError(null);
@@ -91,7 +93,7 @@ export default function Forecast() {
     fetchWeather();
     const interval = setInterval(fetchWeather, 30 * 60 * 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [year]);
 
   const getDescription = (code) => {
     if ([0].includes(code)) return "Sunny";
