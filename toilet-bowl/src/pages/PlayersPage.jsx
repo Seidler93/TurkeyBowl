@@ -3,6 +3,18 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 
 const yearOptions = [2026, 2025, 2024];
+const samplePlayers = [
+  { id: "sample-1", name: "Alex Morgan", blurb: "Reliable hands, questionable route names." },
+  { id: "sample-2", name: "Ben Carter", blurb: "Shows up early and talks like a coach by halftime." },
+  { id: "sample-3", name: "Chris Reynolds", blurb: "Deep threat until the second plate of food." },
+  { id: "sample-4", name: "Drew Parker", blurb: "Built for short-yardage chaos and big celebrations." },
+  { id: "sample-5", name: "Evan Brooks", blurb: "Claims every throw was catchable. Usually smiling." },
+  { id: "sample-6", name: "Jordan Hayes", blurb: "Defense first, highlights second, excuses never." },
+  { id: "sample-7", name: "Kai Mitchell", blurb: "Can turn a broken play into a family story." },
+  { id: "sample-8", name: "Logan Price", blurb: "Quiet before kickoff, loud after one good catch." },
+  { id: "sample-9", name: "Mason Lee", blurb: "Plays through soreness, hunger, and questionable calls." },
+  { id: "sample-10", name: "Sam Bennett", blurb: "Veteran energy with rookie-level stretching discipline." },
+];
 
 export default function PlayersPage() {
   const [selectedYear, setSelectedYear] = useState(2026);
@@ -37,6 +49,7 @@ export default function PlayersPage() {
   const playerCountLabel = useMemo(() => {
     if (loading) return "Loading roster...";
     if (players.length === 1) return "1 player checked in";
+    if (players.length === 0) return "Sample roster placeholders";
     return `${players.length} players checked in`;
   }, [loading, players.length]);
 
@@ -79,12 +92,18 @@ export default function PlayersPage() {
         <div className="players-grid">
           {players.map((player) => (
             <article className="player-card" key={player.id}>
-              <img
-                className="player-photo"
-                src={player.thumbUrl || player.imageUrl}
-                alt={player.name}
-                loading="lazy"
-              />
+              {player.thumbUrl || player.imageUrl ? (
+                <img
+                  className="player-photo"
+                  src={player.thumbUrl || player.imageUrl}
+                  alt={player.name}
+                  loading="lazy"
+                />
+              ) : (
+                <div className="player-photo-placeholder">
+                  <span>{player.name?.charAt(0) || "?"}</span>
+                </div>
+              )}
               <div className="player-info">
                 <h3>{player.name}</h3>
                 <p>{player.blurb}</p>
@@ -93,7 +112,19 @@ export default function PlayersPage() {
           ))}
         </div>
       ) : (
-        <p className="empty-gallery">No player profiles yet for {selectedYear}.</p>
+        <div className="players-grid">
+          {samplePlayers.map((player) => (
+            <article className="player-card player-card-sample" key={player.id}>
+              <div className="player-photo-placeholder">
+                <span>{player.name.charAt(0)}</span>
+              </div>
+              <div className="player-info">
+                <h3>{player.name}</h3>
+                <p>{player.blurb}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       )}
     </div>
   );

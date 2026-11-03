@@ -548,12 +548,15 @@ section ul {
 
 .players-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 18px;
   margin-top: 28px;
 }
 
 .player-card {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: stretch;
   overflow: hidden;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
@@ -565,6 +568,7 @@ section ul {
 .player-photo,
 .player-photo-placeholder {
   width: 100%;
+  min-height: 100%;
   aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
@@ -573,8 +577,25 @@ section ul {
   background: rgba(255, 255, 255, 0.05);
 }
 
+.player-photo-placeholder span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(240, 180, 41, 0.14);
+  color: #f0b429;
+  border: 1px solid rgba(240, 180, 41, 0.35);
+  font-size: 2rem;
+  font-weight: 800;
+}
+
 .player-info {
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .player-info h3 {
@@ -591,7 +612,27 @@ section ul {
 }
 
 .player-card-loading {
-  min-height: 280px;
+  min-height: 140px;
+}
+
+.player-card-sample {
+  border-style: dashed;
+}
+
+@media (max-width: 520px) {
+  .players-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .player-card {
+    grid-template-columns: 96px 1fr;
+  }
+
+  .player-photo-placeholder span {
+    width: 56px;
+    height: 56px;
+    font-size: 1.5rem;
+  }
 }
 
 /* ========== Gallery ========== */
@@ -769,6 +810,11 @@ section ul {
 
 .load-more:hover {
   background: #fff;
+}
+
+.load-more:disabled {
+  opacity: 0.65;
+  cursor: wait;
 }
 
 /* ========== Modal Background Overlay ========== */

@@ -57,6 +57,7 @@ export default function GalleryPage() {
         title={`${selectedOption.label} Gallery`}
         emptyMessage={`No photos have been added for ${selectedOption.label} yet.`}
         initialCount={50}
+        loadMoreCount={50}
       />
     </>
   );

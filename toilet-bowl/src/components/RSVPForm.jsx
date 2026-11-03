@@ -12,6 +12,18 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { createThumbnail } from "../utils/createThumbnail";
 
 const PROFILE_YEAR = 2026;
+const profileBlurbIdeas = [
+  "A high-motor player with reliable hands and deeply unreliable pre-game stretching habits.",
+  "Known for clutch catches, loud celebrations, and acting shocked when the defense covers them.",
+  "Brings veteran confidence, sideline leadership, and at least one questionable play call.",
+  "A dangerous open-field threat once the coffee, weather, and family trash talk all kick in.",
+  "Plays with heart, hustle, and the firm belief that every pass was technically catchable.",
+  "Built for short-yardage chaos, backyard glory, and post-game food-table dominance.",
+  "A locker room favorite with elite vibes and a scouting report written mostly in pencil.",
+  "Fast enough to be a problem, humble enough to blame the shoes when things go sideways.",
+  "A two-way contributor who specializes in momentum swings and dramatic first downs.",
+  "Shows up ready to compete, complain about the cold, and make one play everyone hears about later.",
+];
 
 function safeFileName(fileName) {
   const extension = fileName.includes(".") ? fileName.slice(fileName.lastIndexOf(".")) : ".jpg";
@@ -26,6 +38,14 @@ function safeFileName(fileName) {
 function profileIdFor(rsvpId, name) {
   const safeName = name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
   return `${PROFILE_YEAR}_${safeName || "player"}_${rsvpId}`;
+}
+
+function generateProfileBlurb(name) {
+  const idea = profileBlurbIdeas[Math.floor(Math.random() * profileBlurbIdeas.length)];
+  const firstName = name.trim().split(/\s+/)[0];
+
+  if (!firstName) return idea;
+  return `${firstName}: ${idea}`;
 }
 
 export default function RSVPForm({ onClose }) {
@@ -188,6 +208,13 @@ export default function RSVPForm({ onClose }) {
                 placeholder="Tell the roster about your game, your nickname, or your questionable scouting report."
                 maxLength={240}
               />
+              <button
+                type="button"
+                className="secondary-btn"
+                onClick={() => setProfileBlurb(generateProfileBlurb(savedRsvp.name))}
+              >
+                Auto Generate Description
+              </button>
               <input
                 type="file"
                 accept="image/*"

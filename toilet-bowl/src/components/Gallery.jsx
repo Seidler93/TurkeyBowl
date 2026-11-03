@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getImageItems, getImageUrl } from "../utils/getImages.js";
-import { getGalleryIndex } from "../utils/getGalleryIndex.js";
+import { getGalleryIndexPage } from "../utils/getGalleryIndex.js";
 
 export default function Gallery({
   folderName = "gallery",
@@ -11,12 +11,17 @@ export default function Gallery({
   title = "Gallery",
   emptyMessage = "No photos yet",
   initialCount = 10,
+  loadMoreCount = 20,
 }) {
   const [allPhotos, setAllPhotos] = useState([]);
   const [visiblePhotos, setVisiblePhotos] = useState([]);
   const [count, setCount] = useState(initialCount);
   const [activeIndex, setActiveIndex] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [indexCursor, setIndexCursor] = useState(null);
+  const [indexHasMore, setIndexHasMore] = useState(false);
+  const [usingIndex, setUsingIndex] = useState(false);
   const [activeFullUrl, setActiveFullUrl] = useState("");
   const [fullLoading, setFullLoading] = useState(false);
 
@@ -30,16 +35,23 @@ export default function Gallery({
       setCount(initialCount);
       setActiveIndex(null);
       setLoading(true);
+      setLoadingMore(false);
+      setIndexCursor(null);
+      setIndexHasMore(false);
+      setUsingIndex(false);
       setActiveFullUrl("");
       setFullLoading(false);
 
       if (timeline) {
-        const indexedPhotos = await getGalleryIndex(timeline, initialCount);
+        const indexedPage = await getGalleryIndexPage(timeline, initialCount);
 
-        if (indexedPhotos.length > 0) {
-          setAllPhotos(indexedPhotos);
-          setVisiblePhotos(indexedPhotos);
-          setCount(indexedPhotos.length);
+        if (indexedPage.photos.length > 0) {
+          setAllPhotos(indexedPage.photos);
+          setVisiblePhotos(indexedPage.photos);
+          setCount(indexedPage.photos.length);
+          setIndexCursor(indexedPage.cursor);
+          setIndexHasMore(indexedPage.hasMore);
+          setUsingIndex(true);
           setLoading(false);
           return;
         }
@@ -131,8 +143,26 @@ export default function Gallery({
     };
   }, [isLightboxOpen, visiblePhotos.length]);
 
-  const loadMore = () => {
-    const newCount = count + 20;
+  const loadMore = async () => {
+    if (usingIndex) {
+      setLoadingMore(true);
+
+      const nextPage = await getGalleryIndexPage(
+        timeline,
+        loadMoreCount,
+        indexCursor
+      );
+
+      setAllPhotos((current) => [...current, ...nextPage.photos]);
+      setVisiblePhotos((current) => [...current, ...nextPage.photos]);
+      setCount((current) => current + nextPage.photos.length);
+      setIndexCursor(nextPage.cursor);
+      setIndexHasMore(nextPage.hasMore);
+      setLoadingMore(false);
+      return;
+    }
+
+    const newCount = count + loadMoreCount;
     setCount(newCount);
     setVisiblePhotos(allPhotos.slice(0, newCount));
   };
@@ -191,9 +221,9 @@ export default function Gallery({
       </div>
       )}
 
-      {visiblePhotos.length < allPhotos.length && (
-        <button className="load-more" onClick={loadMore}>
-          Load More
+      {((usingIndex && indexHasMore) || visiblePhotos.length < allPhotos.length) && (
+        <button className="load-more" onClick={loadMore} disabled={loadingMore}>
+          {loadingMore ? "Loading..." : "Load More"}
         </button>
       )}
 
