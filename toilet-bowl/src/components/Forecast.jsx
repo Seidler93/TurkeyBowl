@@ -95,16 +95,17 @@ export default function Forecast() {
     return () => clearInterval(interval);
   }, [year]);
 
-  const getDescription = (code) => {
-    if ([0].includes(code)) return "Sunny";
-    if ([1, 2].includes(code)) return "Partly cloudy";
-    if ([3].includes(code)) return "Cloudy";
-    if ([45, 48].includes(code)) return "Fog";
-    if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) return "Rain";
-    if ([71, 73, 75, 77, 85, 86].includes(code)) return "Snow";
-    if ([95, 96, 99].includes(code)) return "Storms";
-    return "Weather";
+  const getWeather = (code) => {
+    if (code === 0) return { label: "Sunny", icon: "\u2600\uFE0F", type: "sun" };
+    if ([1, 2].includes(code)) return { label: "Partly cloudy", icon: "\u26C5", type: "cloud" };
+    if (code === 3) return { label: "Cloudy", icon: "\u2601\uFE0F", type: "cloud" };
+    if ([45, 48].includes(code)) return { label: "Fog", icon: "\uD83C\uDF2B\uFE0F", type: "cloud" };
+    if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) return { label: "Rain", icon: "\uD83C\uDF27\uFE0F", type: "rain" };
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return { label: "Snow", icon: "\uD83C\uDF28\uFE0F", type: "snow" };
+    if ([95, 96, 99].includes(code)) return { label: "Storms", icon: "\u26C8\uFE0F", type: "storm" };
+    return { label: "Weather", icon: "\uD83C\uDF21\uFE0F", type: "unknown" };
   };
+  const weather = forecast ? getWeather(forecast.weathercode) : null;
 
   return (
     <section id="forecast" className="forecast">
@@ -115,7 +116,10 @@ export default function Forecast() {
 
       {forecast && (
         <div className="forecast-box">
-          <span className="icon">{getDescription(forecast.weathercode)}</span>
+          <div className="forecast-condition">
+            <span className={`weather-symbol weather-symbol-${weather.type}`} aria-hidden="true">{weather.icon}</span>
+            <span className="weather-label">{weather.label}</span>
+          </div>
           <div className="forecast-info">
             <p>{label} forecast for {formatDisplayDate(forecast.date)}</p>
             <p>High: {Math.round(forecast.high)} F | Low: {Math.round(forecast.low)} F</p>

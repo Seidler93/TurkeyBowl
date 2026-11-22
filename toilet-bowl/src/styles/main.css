@@ -523,8 +523,9 @@ section ul {
 }
 
 .upload-progress li {
-  display: flex;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
   justify-content: space-between;
   align-items: center;
   padding: 10px 12px;
@@ -540,7 +541,38 @@ section ul {
 
 .upload-progress strong {
   color: #f0b429;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+.upload-progress-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  color: #ddd;
+}
+
+.upload-card progress {
+  display: block;
+  width: 100%;
+  height: 10px;
+  border: 0;
+  border-radius: 5px;
+  overflow: hidden;
+  accent-color: #f0b429;
+  background: #333;
+}
+
+.upload-card progress::-webkit-progress-bar {
+  background: #333;
+}
+
+.upload-card progress::-webkit-progress-value {
+  background: #f0b429;
+}
+
+.upload-card progress::-moz-progress-bar {
+  background: #f0b429;
 }
 
 .players-page {
@@ -1089,6 +1121,38 @@ section ul {
   font-style: italic;
 }
 
+.latest-winner {
+  margin: 24px auto;
+  max-width: 760px;
+}
+
+.latest-winner h3 {
+  margin: 8px 0;
+  font-size: 2rem;
+  color: #f0b429;
+}
+
+.latest-winner-score {
+  margin: 0 0 20px;
+}
+
+.latest-winner-photo {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.latest-winner-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .winners-table-wrap {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1442,8 +1506,68 @@ section ul {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-.forecast .icon {
-  font-size: 3rem;
+.forecast-condition {
+  flex: 0 0 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.weather-symbol {
+  display: inline-block;
+  font-size: 3.5rem;
+  line-height: 1.2;
+}
+
+.weather-label {
+  font-size: 0.85rem;
+  color: #f0b429;
+}
+
+.weather-symbol-sun {
+  animation: weather-glow 4s ease-in-out infinite;
+}
+
+.weather-symbol-cloud,
+.weather-symbol-snow {
+  animation: weather-drift 5s ease-in-out infinite;
+}
+
+.weather-symbol-rain {
+  animation: weather-bob 2s ease-in-out infinite;
+}
+
+.weather-symbol-storm {
+  animation: weather-bob 3s ease-in-out infinite;
+}
+
+@keyframes weather-glow {
+  50% { transform: scale(1.08) rotate(10deg); }
+}
+
+@keyframes weather-drift {
+  25% { transform: translate(-4px, -3px); }
+  75% { transform: translate(4px, 2px); }
+}
+
+@keyframes weather-bob {
+  50% { transform: translateY(5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .weather-symbol { animation: none; }
+}
+
+@media (max-width: 420px) {
+  .forecast-box {
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 16px;
+  }
+
+  .forecast-condition { flex-basis: auto; }
+  .forecast-info { text-align: center; }
 }
 
 .forecast-info {

@@ -1,31 +1,11 @@
 import { useMemo, useState } from "react";
 import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { db, storage } from "../firebase";
 import { createThumbnail } from "../utils/createThumbnail";
+import useGalleryTimelines from "../utils/useGalleryTimelines";
 
 const ACCESS_CODE = "turkey";
-
-const timelineOptions = [
-  {
-    label: "The Past",
-    timeline: "The Past",
-    folderKey: "past",
-    year: null,
-  },
-  {
-    label: "2024",
-    timeline: "2024",
-    folderKey: "2024",
-    year: 2024,
-  },
-  {
-    label: "2025",
-    timeline: "2025",
-    folderKey: "2025",
-    year: 2025,
-  },
-];
 
 function safeFileName(fileName) {
   const extension = fileName.includes(".") ? fileName.slice(fileName.lastIndexOf(".")) : ".jpg";
@@ -41,10 +21,21 @@ function docIdFor(timeline, fileName) {
   return `${timeline}_${fileName.replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_")}`;
 }
 
+function uploadWithProgress(storageRef, file, metadata, onProgress) {
+  return new Promise((resolve, reject) => {
+    const task = uploadBytesResumable(storageRef, file, metadata);
+    task.on("state_changed", (snapshot) => {
+      onProgress(snapshot.bytesTransferred);
+    }, reject, () => resolve(task.snapshot));
+  });
+}
+
 export default function UploadPhotosPage() {
+  const timelineOptions = useGalleryTimelines();
   const [code, setCode] = useState("");
   const [unlocked, setUnlocked] = useState(false);
-  const [selectedTimeline, setSelectedTimeline] = useState("2025");
+  const [timelineChoice, setSelectedTimeline] = useState(null);
+  const selectedTimeline = timelineChoice ?? timelineOptions[0].timeline;
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
@@ -52,7 +43,7 @@ export default function UploadPhotosPage() {
 
   const selectedOption = useMemo(
     () => timelineOptions.find((option) => option.timeline === selectedTimeline) || timelineOptions[0],
-    [selectedTimeline]
+    [selectedTimeline, timelineOptions]
   );
 
   const handleCodeSubmit = (e) => {
@@ -66,15 +57,16 @@ export default function UploadPhotosPage() {
     }
   };
 
-  const updateProgress = (fileName, status) => {
-    setProgress((current) => {
-      const existing = current.find((item) => item.fileName === fileName);
-      if (existing) {
-        return current.map((item) => item.fileName === fileName ? { ...item, status } : item);
-      }
+  const overallPercent = progress.length ? Math.floor(progress.reduce(
+    (total, item) => total + (item.status === "Failed" ? 100 : item.percent), 0
+  ) / progress.length) : 0;
+  const completedCount = progress.filter((item) => item.status === "Done").length;
+  const failedCount = progress.filter((item) => item.status === "Failed").length;
 
-      return [...current, { fileName, status }];
-    });
+  const updateProgress = (index, status, percent) => {
+    setProgress((current) => current.map((item, itemIndex) => itemIndex === index
+      ? { ...item, status, ...(percent === undefined ? {} : { percent }) }
+      : item));
   };
 
   const handleUpload = async (e) => {
@@ -83,7 +75,7 @@ export default function UploadPhotosPage() {
 
     setUploading(true);
     setMessage("");
-    setProgress([]);
+    setProgress(files.map((file) => ({ fileName: file.name, status: "Queued", percent: 0 })));
 
     let succeeded = 0;
     let failed = 0;
@@ -98,24 +90,26 @@ export default function UploadPhotosPage() {
       const docId = docIdFor(selectedOption.timeline, uniqueName);
 
       try {
-        updateProgress(file.name, "Creating thumbnail...");
+        updateProgress(index, "Creating thumbnail...", 0);
         const thumbnail = await createThumbnail(file);
+        const totalBytes = file.size + thumbnail.size;
+        const transferPercent = (bytes) => Math.min(99, Math.floor(bytes / totalBytes * 99));
 
-        updateProgress(file.name, "Uploading full photo...");
+        updateProgress(index, "Uploading full photo...");
         const fullRef = ref(storage, fullPath);
-        await uploadBytes(fullRef, file, {
+        await uploadWithProgress(fullRef, file, {
           contentType: file.type || "image/jpeg",
           cacheControl: "public,max-age=31536000,immutable",
-        });
+        }, (bytes) => updateProgress(index, "Uploading full photo...", transferPercent(bytes)));
 
-        updateProgress(file.name, "Uploading thumbnail...");
+        updateProgress(index, "Uploading thumbnail...");
         const thumbRef = ref(storage, thumbPath);
-        await uploadBytes(thumbRef, thumbnail, {
+        await uploadWithProgress(thumbRef, thumbnail, {
           contentType: "image/jpeg",
           cacheControl: "public,max-age=31536000,immutable",
-        });
+        }, (bytes) => updateProgress(index, "Uploading thumbnail...", transferPercent(file.size + bytes)));
 
-        updateProgress(file.name, "Saving gallery index...");
+        updateProgress(index, "Saving gallery index...", 99);
         const [fullUrl, thumbUrl] = await Promise.all([
           getDownloadURL(fullRef),
           getDownloadURL(thumbRef),
@@ -139,11 +133,11 @@ export default function UploadPhotosPage() {
         );
 
         succeeded++;
-        updateProgress(file.name, "Done");
+        updateProgress(index, "Done", 100);
       } catch (error) {
         failed++;
         console.error(`Upload failed for ${file.name}:`, error);
-        updateProgress(file.name, "Failed");
+        updateProgress(index, "Failed");
       }
     }
 
@@ -206,11 +200,22 @@ export default function UploadPhotosPage() {
           {message && <p className="upload-message">{message}</p>}
 
           {progress.length > 0 && (
+            <div className="upload-batch-progress">
+              <div className="upload-progress-label">
+                <span>{completedCount} of {progress.length} uploaded{failedCount > 0 ? `, ${failedCount} failed` : ""}</span>
+                <strong>{overallPercent}%</strong>
+              </div>
+              <progress max="100" value={overallPercent} aria-label="Overall photo upload progress" />
+            </div>
+          )}
+
+          {progress.length > 0 && (
             <ul className="upload-progress">
-              {progress.map((item) => (
-                <li key={item.fileName}>
+              {progress.map((item, index) => (
+                <li key={index}>
                   <span>{item.fileName}</span>
-                  <strong>{item.status}</strong>
+                  <strong>{item.status}{item.status.startsWith("Uploading") ? ` ${item.percent}%` : ""}</strong>
+                  <progress max="100" value={item.percent} aria-label={`Upload progress for ${item.fileName}`} />
                 </li>
               ))}
             </ul>

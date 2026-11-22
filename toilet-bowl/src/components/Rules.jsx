@@ -1,7 +1,7 @@
-export default function Rules() {
+export default function Rules({ showHeading = true }) {
   return (
     <section id="rules" className="rules">
-      <h2>Rules of the Game</h2>
+      {showHeading && <h2>Rules of the Game</h2>}
       <ul>
         <li>8v8</li>
         <li>Ball must be snapped.</li>

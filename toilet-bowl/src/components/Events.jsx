@@ -12,7 +12,7 @@ export default function Events() {
     const fetchEvents = async () => {
       try {
         const snap = await getDocs(collection(db, "events"));
-        const data = snap.docs.map((d) => {
+        const data = snap.docs.filter((d) => d.data().type === "dinner").map((d) => {
           const event = d.data();
           return { ...event, date: eventDate(event, year) };
         });
@@ -37,8 +37,7 @@ export default function Events() {
 
   return (
     <section id="events" className="events">
-      <h2>Toilet Bowl Events</h2>
-      <p className="subtitle">Practice makes perfect — and don’t miss dinner the night before kickoff!</p>
+      <h2>Pregame Dinner</h2>
 
       <div className="event-list">
         {events.map((ev, i) => (

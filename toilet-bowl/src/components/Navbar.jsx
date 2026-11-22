@@ -26,7 +26,7 @@ const Navbar = ({ onNavigate }) => {
       <div className={`menu ${open ? "open" : ""}`}>
         <button onClick={() => scrollTo("about")}>About</button>
         <button onClick={() => scrollTo("details")}>Details</button>
-        <button onClick={() => scrollTo("events")}>Events</button>
+        <button onClick={() => scrollTo("events")}>Pregame Dinner</button>
         <button
           onClick={() => {
             onNavigate("/gallery");
@@ -35,17 +35,15 @@ const Navbar = ({ onNavigate }) => {
         >
           Gallery
         </button>
-        <button onClick={() => scrollTo("rules")}>Rules</button>
-        <button onClick={() => scrollTo("winners")}>Record</button>
+        <button onClick={() => {
+          onNavigate("/rules");
+          setOpen(false);
+        }}>Rules</button>
+        <button onClick={() => {
+          onNavigate("/winners");
+          setOpen(false);
+        }}>Previous Winners</button>
         <button onClick={() => scrollTo("attendance")}>Attendance</button>
-        <button
-          onClick={() => {
-            onNavigate("/players");
-            setOpen(false);
-          }}
-        >
-          Players
-        </button>
         <button
           onClick={() => {
             onNavigate("/upload");

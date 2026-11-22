@@ -1,29 +1,11 @@
 import { useState } from "react";
 import Gallery from "../components/Gallery";
-
-const yearOptions = [
-  {
-    label: "The Past",
-    timeline: "The Past",
-    thumbFolderName: "gallery-thumbs/past",
-    fullFolderName: "gallery-full/past",
-  },
-  {
-    label: "2024",
-    timeline: "2024",
-    thumbFolderName: "gallery-thumbs/2024",
-    fullFolderName: "gallery-full/2024",
-  },
-  {
-    label: "2025",
-    timeline: "2025",
-    thumbFolderName: "gallery-thumbs/2025",
-    fullFolderName: "gallery-full/2025",
-  },
-];
+import useGalleryTimelines from "../utils/useGalleryTimelines";
 
 export default function GalleryPage() {
-  const [selectedYear, setSelectedYear] = useState(yearOptions[0].label);
+  const yearOptions = useGalleryTimelines();
+  const [yearChoice, setSelectedYear] = useState(null);
+  const selectedYear = yearChoice ?? yearOptions[0].label;
   const selectedOption = yearOptions.find((option) => option.label === selectedYear) || yearOptions[0];
 
   return (

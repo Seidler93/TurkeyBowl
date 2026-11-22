@@ -3,7 +3,6 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
 import Gallery from "./components/Gallery";
-import Rules from "./components/Rules";
 import RSVPForm from "./components/RSVPForm";
 import Attendance from "./components/Attendance";
 import PreviousWinners from "./components/PreviousWinners";
@@ -13,13 +12,15 @@ import Forecast from "./components/Forecast";
 import Details from "./components/Details";
 import GalleryPage from "./pages/GalleryPage";
 import UploadPhotosPage from "./pages/UploadPhotosPage";
-import PlayersPage from "./pages/PlayersPage";
+import WinnersPage from "./pages/WinnersPage";
+import RulesPage from "./pages/RulesPage";
 import "./styles/main.css";
 
 const customPages = {
   "/gallery": GalleryPage,
   "/upload": UploadPhotosPage,
-  "/players": PlayersPage,
+  "/winners": WinnersPage,
+  "/rules": RulesPage,
 };
 
 function getPath() {
@@ -87,8 +88,7 @@ function App() {
         fullFolderName="gallery-full/2024"
         padding="fix"
       />
-      <Rules />
-      <PreviousWinners />
+      <PreviousWinners latestOnly onViewAll={() => navigate("/winners")} />
       <Attendance />
       <footer className="footer">Copyright 2026 Toilet Bowl - Built by AJ</footer>
       {showRSVP && <RSVPForm onClose={() => setShowRSVP(false)} />}

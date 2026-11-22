@@ -4,13 +4,17 @@ export function thanksgivingDate(year) {
   return `${year}-11-${day}`;
 }
 
-export function getGameYear(now = new Date()) {
-  const localDate = new Intl.DateTimeFormat("en-CA", {
+export function chicagoDate(now = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/Chicago",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   }).format(now);
+}
+
+export function getGameYear(now = new Date()) {
+  const localDate = chicagoDate(now);
   const year = Number(localDate.slice(0, 4));
   return localDate > thanksgivingDate(year) ? year + 1 : year;
 }
