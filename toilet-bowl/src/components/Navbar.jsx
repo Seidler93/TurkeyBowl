@@ -26,7 +26,6 @@ const Navbar = ({ onNavigate }) => {
       <div className={`menu ${open ? "open" : ""}`}>
         <button onClick={() => scrollTo("about")}>About</button>
         <button onClick={() => scrollTo("details")}>Details</button>
-        <button onClick={() => scrollTo("events")}>Pregame Dinner</button>
         <button
           onClick={() => {
             onNavigate("/gallery");
