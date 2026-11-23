@@ -63,6 +63,7 @@ export default function Events() {
               <li><strong>Date:</strong> {formatDate(ev.date)}</li>
               <li><strong>Start time:</strong> {formatTime(ev.date)}</li>
               {ev.details && <li><strong>Details:</strong> {ev.details}</li>}
+              <li><strong>Contact:</strong> AJ - <a href="tel:+12246605288">224-660-5288</a></li>
             </ul>
             <img
               className="dinner-photo"

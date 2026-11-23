@@ -3,6 +3,7 @@ import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { db, storage } from "../firebase";
 import { chicagoDate } from "../utils/gameYear";
+import AdminAttendance from "../components/AdminAttendance";
 
 const ADMIN_PIN = "0526";
 
@@ -131,6 +132,7 @@ export default function AdminPage() {
           {message && <p role="status">{message}</p>}
         </form>
       )}
+      {unlocked && <AdminAttendance />}
     </div>
   );
 }

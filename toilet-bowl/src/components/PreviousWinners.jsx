@@ -3,10 +3,12 @@ import { db, collection, getDocs } from "../firebase";
 import { storage } from "../firebase";
 import { getDownloadURL, ref } from "firebase/storage";
 import ZoomablePhoto from "./ZoomablePhoto";
+import RosterDialog from "./RosterDialog";
 
 export default function PreviousWinners({ latestOnly = false, showHeading = true, onViewAll, view = "table" }) {
   const [rows, setRows] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [rosterYear, setRosterYear] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const viewerRef = useRef(null);
@@ -136,6 +138,7 @@ export default function PreviousWinners({ latestOnly = false, showHeading = true
               <th>Team Photo</th>
               <th>Winning Team</th>
               <th>Score</th>
+              <th>Roster</th>
             </tr>
           </thead>
           <tbody>
@@ -166,6 +169,7 @@ export default function PreviousWinners({ latestOnly = false, showHeading = true
                 </td>
                 <td>{r.team}</td>
                 <td>{r.score}</td>
+                <td><button className="year-link" type="button" aria-label={`View ${r.year} roster`} onClick={() => setRosterYear(r.year)}>View Roster</button></td>
               </tr>
             ))}
           </tbody>
@@ -173,6 +177,7 @@ export default function PreviousWinners({ latestOnly = false, showHeading = true
       </div>
       )}
       {onViewAll && <button className="year-link" onClick={onViewAll}>View the record book</button>}
+      {rosterYear !== null && <RosterDialog key={rosterYear} year={rosterYear} onClose={() => setRosterYear(null)} />}
 
       {selected && (
         <div className="modal" onClick={() => setSelected(null)}>
