@@ -8,11 +8,14 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { mixGalleryYears } from "./mixGalleryYears.js";
 
 function mapGalleryPhoto(photoDoc) {
   const data = photoDoc.data();
   return {
     id: photoDoc.id,
+    timeline: data.timeline,
+    year: data.year,
     fileName: data.fileName,
     thumbUrl: data.thumbUrl,
     fullUrl: data.fullUrl || data.thumbUrl,
@@ -29,12 +32,7 @@ export async function getGalleryIndex(timeline, maxItems = 50) {
 export async function getRandomGalleryIndex() {
   try {
     const snapshot = await getDocs(collection(db, "galleryIndex"));
-    const photos = snapshot.docs.map(mapGalleryPhoto).filter((photo) => photo.thumbUrl);
-    for (let index = photos.length - 1; index > 0; index--) {
-      const other = Math.floor(Math.random() * (index + 1));
-      [photos[index], photos[other]] = [photos[other], photos[index]];
-    }
-    return photos;
+    return mixGalleryYears(snapshot.docs.map(mapGalleryPhoto));
   } catch (error) {
     console.error("Error fetching gallery photos across years:", error);
     return [];
