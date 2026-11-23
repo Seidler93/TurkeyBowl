@@ -26,44 +26,55 @@ export default function Events() {
   }, [year]);
 
   const formatDate = (iso) =>
-    new Date(iso).toLocaleString("en-US", {
+    new Date(iso).toLocaleDateString("en-US", {
       timeZone: "America/Chicago",
-      weekday: "short",
-      month: "short",
+      weekday: "long",
+      month: "long",
       day: "numeric",
+      year: "numeric",
+    });
+
+  const formatTime = (iso) =>
+    new Date(iso).toLocaleTimeString("en-US", {
+      timeZone: "America/Chicago",
       hour: "numeric",
       minute: "2-digit",
     });
 
   return (
-    <section id="events" className="events">
+    <section id="events" className="details">
       <h2>Pregame Dinner</h2>
 
-      <div className="event-list">
         {events.map((ev, i) => (
-          <div className={`event-card ${ev.type}`} key={i}>
-            <div className="event-date">{formatDate(ev.date)}</div>
-
-            <div className="event-body">
-              <h3>{ev.title}</h3>
-              <p className="event-location">{ev.location}</p>
-              <p className="event-details">{ev.details}</p>
-
+          <div className="details-card" key={i}>
+            <ul className="details-list">
+              <li><strong>Location:</strong> {ev.location}</li>
               {ev.address && (
+                <li><strong>Address:</strong>{" "}
                 <a
-                  className="event-address"
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.address)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   {ev.address}
                 </a>
+                </li>
               )}
-            </div>
+              <li><strong>Date:</strong> {formatDate(ev.date)}</li>
+              <li><strong>Start time:</strong> {formatTime(ev.date)}</li>
+              {ev.details && <li><strong>Details:</strong> {ev.details}</li>}
+            </ul>
+            <img
+              className="dinner-photo"
+              src="/pregame-dinner.jpg"
+              alt="A slice of deep-dish pizza lifted from the pie with melted cheese stretching underneath"
+              width="678"
+              height="452"
+              loading="lazy"
+            />
           </div>
         ))}
 
-      </div>
     </section>
   );
 }

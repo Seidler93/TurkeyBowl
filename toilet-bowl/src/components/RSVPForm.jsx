@@ -12,7 +12,7 @@ export default function RSVPForm({ onClose }) {
 
   useEffect(() => onSnapshot(
     query(collection(db, "rsvps"), where("year", "==", year)),
-    (snapshot) => setCount(snapshot.size),
+    (snapshot) => setCount(snapshot.docs.filter((entry) => entry.data().status === "playing").length),
     (loadError) => console.error("Could not load RSVP count:", loadError)
   ), [year]);
 

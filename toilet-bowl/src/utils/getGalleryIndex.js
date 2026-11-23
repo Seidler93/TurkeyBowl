@@ -26,6 +26,21 @@ export async function getGalleryIndex(timeline, maxItems = 50) {
   return page.photos;
 }
 
+export async function getRandomGalleryIndex() {
+  try {
+    const snapshot = await getDocs(collection(db, "galleryIndex"));
+    const photos = snapshot.docs.map(mapGalleryPhoto).filter((photo) => photo.thumbUrl);
+    for (let index = photos.length - 1; index > 0; index--) {
+      const other = Math.floor(Math.random() * (index + 1));
+      [photos[index], photos[other]] = [photos[other], photos[index]];
+    }
+    return photos;
+  } catch (error) {
+    console.error("Error fetching gallery photos across years:", error);
+    return [];
+  }
+}
+
 export async function getGalleryIndexPage(timeline, pageSize = 50, cursor = null) {
   try {
     const constraints = [

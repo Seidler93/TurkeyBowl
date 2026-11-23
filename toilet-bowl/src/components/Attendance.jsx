@@ -21,7 +21,6 @@ export default function Attendance() {
   }, [year]);
 
   const players = attendees.filter((a) => a.status === "playing");
-  const watchers = attendees.filter((a) => a.status === "watching");
 
   return (
     <section id="attendance" className="attendance">
@@ -44,18 +43,6 @@ export default function Attendance() {
           )}
         </div>
 
-        <div className="list">
-          <h3>Watching ({watchers.length})</h3>
-          {watchers.length > 0 ? (
-            <ul>
-              {watchers.map((w, i) => (
-                <li key={i}>{w.name}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="empty">No watchers yet</p>
-          )}
-        </div>
       </div>
     </section>
   );

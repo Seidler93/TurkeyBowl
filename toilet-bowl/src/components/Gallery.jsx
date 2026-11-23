@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { getImageItems, getImageUrl } from "../utils/getImages.js";
-import { getGalleryIndexPage } from "../utils/getGalleryIndex.js";
+import { getGalleryIndexPage, getRandomGalleryIndex } from "../utils/getGalleryIndex.js";
+import ZoomablePhoto from "./ZoomablePhoto";
 
 export default function Gallery({
   folderName = "gallery",
   thumbFolderName = folderName,
   fullFolderName = folderName,
   timeline,
+  allYears = false,
   padding, 
   title = "Gallery",
   emptyMessage = "No photos yet",
@@ -42,6 +44,14 @@ export default function Gallery({
       setActiveFullUrl("");
       setFullLoading(false);
 
+      if (allYears) {
+        const photos = await getRandomGalleryIndex();
+        setAllPhotos(photos);
+        setVisiblePhotos(photos.slice(0, initialCount));
+        setLoading(false);
+        return;
+      }
+
       if (timeline) {
         const indexedPage = await getGalleryIndexPage(timeline, initialCount);
 
@@ -69,7 +79,7 @@ export default function Gallery({
       setLoading(false);
     }
     loadGallery();
-  }, [thumbFolderName, fullFolderName, timeline, initialCount]);
+  }, [thumbFolderName, fullFolderName, timeline, initialCount, allYears]);
 
   useEffect(() => {
     if (!activePhoto) {
@@ -249,11 +259,12 @@ export default function Gallery({
             &lt;
           </button>
 
-          <img
-            className="lightbox-image"
+          <ZoomablePhoto
+            key={activePhoto.id || activePhoto.fullPath || activeIndex}
             src={activeFullUrl || activePhoto.thumbUrl}
             alt={`Toilet Bowl photo ${activeIndex + 1}`}
-            onClick={(e) => e.stopPropagation()}
+            onPrevious={showPrevious}
+            onNext={showNext}
           />
 
           {fullLoading && (

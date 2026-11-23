@@ -41,8 +41,7 @@ const Navbar = ({ onNavigate }) => {
         <button onClick={() => {
           onNavigate("/winners");
           setOpen(false);
-        }}>Previous Winners</button>
-        <button onClick={() => scrollTo("attendance")}>Attendance</button>
+        }}>The Record Book</button>
         <button
           onClick={() => {
             onNavigate("/upload");
@@ -50,6 +49,12 @@ const Navbar = ({ onNavigate }) => {
           }}
         >
           Upload Photos
+        </button>
+        <button className="admin-menu-button" aria-label="Open admin page" title="Admin" onClick={() => {
+          onNavigate("/admin");
+          setOpen(false);
+        }}>
+          <img src={logo} alt="" />
         </button>
       </div>
       <button

@@ -14,6 +14,7 @@ import GalleryPage from "./pages/GalleryPage";
 import UploadPhotosPage from "./pages/UploadPhotosPage";
 import WinnersPage from "./pages/WinnersPage";
 import RulesPage from "./pages/RulesPage";
+import AdminPage from "./pages/AdminPage";
 import "./styles/main.css";
 
 const customPages = {
@@ -21,6 +22,7 @@ const customPages = {
   "/upload": UploadPhotosPage,
   "/winners": WinnersPage,
   "/rules": RulesPage,
+  "/admin": AdminPage,
 };
 
 function getPath() {
@@ -79,16 +81,14 @@ function App() {
       <Hero onRSVPClick={() => setShowRSVP(true)} />
       <About />
       <Details />
+      <PreviousWinners latestOnly onViewAll={() => navigate("/winners")} />
       <KickoffTimer />
       <Forecast />
       <Events />
       <Gallery
-        timeline="2024"
-        thumbFolderName="gallery-thumbs/2024"
-        fullFolderName="gallery-full/2024"
+        allYears
         padding="fix"
       />
-      <PreviousWinners latestOnly onViewAll={() => navigate("/winners")} />
       <Attendance />
       <footer className="footer">Copyright 2026 Toilet Bowl - Built by AJ</footer>
       {showRSVP && <RSVPForm onClose={() => setShowRSVP(false)} />}

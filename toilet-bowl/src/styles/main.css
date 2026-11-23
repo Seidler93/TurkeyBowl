@@ -94,6 +94,7 @@ body {
   top: 0;
   right: -100%;
   height: 100vh;
+  height: 100dvh;
   width: 220px;
   background: rgba(0, 0, 0, 0.9);
   display: flex;
@@ -124,12 +125,37 @@ body {
 }
 
 /* ========== Hero Section (Instant Swap) ========== */
+.menu .admin-menu-button {
+  position: absolute;
+  right: 16px;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  margin: 0;
+  padding: 4px;
+  width: 52px;
+  height: 52px;
+  background: transparent;
+}
+
+.admin-menu-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.admin-group-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
 .hero-container {
   position: relative;
   min-height: 100svh;
   max-width: none;
   padding: 88px 16px 32px;
   overflow: hidden;
+  background: #000;
 }
 
 .hero-bg {
@@ -138,9 +164,13 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 1;
+  opacity: 0;
   transition: opacity 1.2s ease-in-out;
   will-change: opacity;
+}
+
+.hero-bg.is-ready {
+  opacity: 1;
 }
 
 .fade-layer {
@@ -756,6 +786,61 @@ section ul {
   animation: fadeIn 0.2s ease forwards;
 }
 
+.zoomable-photo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: min(72svh, 720px);
+  min-height: 0;
+}
+
+.photo-zoom-stage {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  touch-action: none;
+  border-radius: 6px;
+}
+
+.zoomable-photo .photo-zoom-stage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.photo-zoom-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.photo-zoom-controls button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  background: #222;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.record-carousel {
+  height: min(90svh, 850px);
+}
+
+.record-carousel .zoomable-photo {
+  flex: 1;
+  height: auto;
+}
+
 .lightbox-image {
   max-width: 100%;
   max-height: calc(100vh - 140px);
@@ -1136,6 +1221,10 @@ section ul {
   margin: 0 0 20px;
 }
 
+.latest-winner-card {
+  text-align: center;
+}
+
 .latest-winner-photo {
   display: block;
   width: 100%;
@@ -1151,6 +1240,125 @@ section ul {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.latest-winner-card-photo {
+  margin-top: 20px;
+}
+
+.champion-feature {
+  position: relative;
+  margin: 24px 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: #1e1e1e;
+}
+
+.record-view-toggle {
+  display: flex;
+  width: fit-content;
+  margin: 24px auto 0;
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: #1e1e1e;
+}
+
+.record-view-toggle button {
+  min-height: 44px;
+  padding: 8px 24px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #ddd;
+  font: inherit;
+  cursor: pointer;
+}
+
+.record-view-toggle button[aria-pressed="true"] {
+  background: #f0b429;
+  color: #111;
+  font-weight: 600;
+}
+
+.record-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: 20px;
+}
+
+.record-gallery .champion-feature {
+  margin: 0;
+  align-self: start;
+}
+
+.champion-feature .latest-winner-photo {
+  border-radius: 0;
+}
+
+.champion-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 24px 48px;
+  text-align: left;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+}
+
+.champion-overlay .champion-year {
+  margin: 0 0 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.champion-overlay h3 {
+  margin: 0;
+  color: #f0b429;
+  font-size: 2rem;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.champion-score {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.champion-score span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.75rem;
+  color: #eee;
+}
+
+.champion-score strong {
+  font-size: 1.75rem;
+  line-height: 1.1;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.champion-feature-no-photo .champion-overlay {
+  position: relative;
+  background: none;
+  padding-bottom: 16px;
+}
+
+@media (max-width: 520px) {
+  .champion-overlay { padding: 14px 16px 30px; gap: 12px; }
+  .champion-overlay .champion-year { font-size: 0.7rem; }
+  .champion-overlay h3 { font-size: 1.6rem; }
+  .champion-score strong { font-size: 1.4rem; }
+  .champion-score span { font-size: 0.65rem; }
 }
 
 .winners-table-wrap {
@@ -1182,6 +1390,35 @@ section ul {
   text-transform: uppercase;
   font-size: 0.85rem;
   letter-spacing: 0.5px;
+}
+
+.record-photo-thumb {
+  display: block;
+  width: 80px;
+  height: 60px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.record-photo-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.record-photo-thumb:focus-visible {
+  outline: 2px solid #f0b429;
+  outline-offset: 3px;
+}
+
+.record-photo-empty {
+  color: #aaa;
+  font-size: 0.85rem;
 }
 
 .year-link {
@@ -1219,6 +1456,36 @@ section ul {
   border-radius: 8px;
   object-fit: contain;
   max-height: 76vh;
+}
+
+.record-carousel .photo-header {
+  padding-right: 36px;
+  overflow-wrap: anywhere;
+}
+
+.record-carousel img {
+  min-height: 0;
+  max-height: 60vh;
+  max-height: 60svh;
+}
+
+.record-carousel-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.record-carousel-controls button {
+  width: 52px;
+  height: 44px;
+  background: #f0b429;
+  border: 0;
+  border-radius: 6px;
+  color: #111;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 .photo-header {
@@ -1664,6 +1931,14 @@ section ul {
 .copy-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   transform: scale(1.1);
+}
+
+.dinner-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+  border-radius: 6px;
 }
 
 .details-list {
