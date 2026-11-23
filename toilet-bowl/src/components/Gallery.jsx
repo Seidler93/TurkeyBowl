@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { getImageItems, getImageUrl } from "../utils/getImages.js";
+import { getImageItems } from "../utils/getImages.js";
 import { getGalleryIndexPage, getRandomGalleryIndex } from "../utils/getGalleryIndex.js";
 import ZoomablePhoto from "./ZoomablePhoto";
+import usePreloadPhotos from "../utils/usePreloadPhotos";
 
 export default function Gallery({
   folderName = "gallery",
@@ -14,6 +15,7 @@ export default function Gallery({
   emptyMessage = "No photos yet",
   initialCount = 10,
   loadMoreCount = 20,
+  columns,
 }) {
   const [allPhotos, setAllPhotos] = useState([]);
   const [visiblePhotos, setVisiblePhotos] = useState([]);
@@ -24,11 +26,10 @@ export default function Gallery({
   const [indexCursor, setIndexCursor] = useState(null);
   const [indexHasMore, setIndexHasMore] = useState(false);
   const [usingIndex, setUsingIndex] = useState(false);
-  const [activeFullUrl, setActiveFullUrl] = useState("");
-  const [fullLoading, setFullLoading] = useState(false);
 
   const isLightboxOpen = activeIndex !== null;
   const activePhoto = isLightboxOpen ? visiblePhotos[activeIndex] : null;
+  usePreloadPhotos(visiblePhotos, activeIndex);
 
   useEffect(() => {
     async function loadGallery() {
@@ -41,8 +42,6 @@ export default function Gallery({
       setIndexCursor(null);
       setIndexHasMore(false);
       setUsingIndex(false);
-      setActiveFullUrl("");
-      setFullLoading(false);
 
       if (allYears) {
         const photos = await getRandomGalleryIndex();
@@ -80,46 +79,6 @@ export default function Gallery({
     }
     loadGallery();
   }, [thumbFolderName, fullFolderName, timeline, initialCount, allYears]);
-
-  useEffect(() => {
-    if (!activePhoto) {
-      setActiveFullUrl("");
-      setFullLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-    setActiveFullUrl("");
-    setFullLoading(true);
-
-    if (activePhoto.fullUrl) {
-      setActiveFullUrl(activePhoto.fullUrl);
-      setFullLoading(false);
-      return;
-    }
-
-    getImageUrl(activePhoto.fullPath)
-      .then((url) => {
-        if (!cancelled) {
-          setActiveFullUrl(url);
-        }
-      })
-      .catch((error) => {
-        console.warn("Falling back to thumbnail for lightbox image:", error);
-        if (!cancelled) {
-          setActiveFullUrl(activePhoto.thumbUrl);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setFullLoading(false);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [activePhoto]);
 
   useEffect(() => {
     if (!isLightboxOpen) return;
@@ -196,7 +155,7 @@ export default function Gallery({
   };
 
   return (
-    <section id="gallery" className={`gallery ${padding}`}>
+    <section id="gallery" className={`gallery ${padding || ""}${columns ? " gallery-columns" : ""}`} style={columns ? { "--gallery-columns": columns } : undefined}>
       <h2>{title}</h2>
       {loading && (
         <div className="grid loading-grid" aria-label="Loading gallery photos">
@@ -260,18 +219,14 @@ export default function Gallery({
           </button>
 
           <ZoomablePhoto
-            key={activePhoto.id || activePhoto.fullPath || activeIndex}
-            src={activeFullUrl || activePhoto.thumbUrl}
+            photoKey={activePhoto.id || activePhoto.fullPath || activeIndex}
+            src={activePhoto.fullUrl}
+            fullPath={activePhoto.fullPath}
+            fallbackSrc={activePhoto.thumbUrl}
             alt={`Toilet Bowl photo ${activeIndex + 1}`}
             onPrevious={showPrevious}
             onNext={showNext}
           />
-
-          {fullLoading && (
-            <div className="lightbox-loading">
-              <span className="photo-loader" />
-            </div>
-          )}
 
           <button
             className="lightbox-nav lightbox-next"

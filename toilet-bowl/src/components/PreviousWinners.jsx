@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { db, collection, getDocs } from "../firebase";
 import { storage } from "../firebase";
 import { getDownloadURL, ref } from "firebase/storage";
 import ZoomablePhoto from "./ZoomablePhoto";
 import RosterDialog from "./RosterDialog";
+import usePreloadPhotos from "../utils/usePreloadPhotos";
 
 export default function PreviousWinners({ latestOnly = false, showHeading = true, onViewAll, view = "table" }) {
   const [rows, setRows] = useState([]);
@@ -13,8 +14,9 @@ export default function PreviousWinners({ latestOnly = false, showHeading = true
   const [error, setError] = useState("");
   const viewerRef = useRef(null);
   const touchStart = useRef(null);
-  const photos = rows.filter((row) => row.photoUrl);
+  const photos = useMemo(() => rows.filter((row) => row.photoUrl), [rows]);
   const selectedIndex = selected ? photos.findIndex((row) => row.year === selected.year) : -1;
+  usePreloadPhotos(photos, selectedIndex);
 
   const movePhoto = (direction) => {
     if (photos.length < 2) return;
@@ -197,10 +199,7 @@ export default function PreviousWinners({ latestOnly = false, showHeading = true
             }}
           >
             <button className="close" onClick={() => setSelected(null)} aria-label="Close photos">x</button>
-            <div className="photo-header" aria-live="polite" aria-atomic="true">
-              <strong>{selected.year}</strong> | {selected.team} | {selected.score}
-            </div>
-            <ZoomablePhoto key={selected.year} src={selected.photoUrl} alt={`${selected.year} group photo`} onPrevious={() => movePhoto(-1)} onNext={() => movePhoto(1)} />
+            <ZoomablePhoto photoKey={selected.year} src={selected.photoUrl} alt={`${selected.year} group photo`} caption={`${selected.year} | ${selected.team} | ${selected.score}`} onPrevious={() => movePhoto(-1)} onNext={() => movePhoto(1)} />
             {photos.length > 1 && (
               <div className="record-carousel-controls">
                 <button type="button" onClick={() => movePhoto(-1)} aria-label="Previous year's photo" title="Previous photo">&larr;</button>

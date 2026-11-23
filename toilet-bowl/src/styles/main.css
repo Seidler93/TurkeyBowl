@@ -44,8 +44,11 @@ body {
   transition: transform 0.3s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .nav-logo:hover {
   transform: scale(1.05);
+}
 }
 
 .nav-title {
@@ -119,7 +122,13 @@ body {
   transition: 0.2s;
 }
 
-.menu button:hover,
+@media (hover: hover) and (pointer: fine) {
+
+.menu button:hover {
+  color: #f0b429;
+}
+}
+
 .menu button.active {
   color: #f0b429;
 }
@@ -290,9 +299,12 @@ body {
   transition: transform 0.2s ease, background 0.3s;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .rsvp-btn:hover {
   transform: scale(1.05);
   background: #fff;
+}
 }
 
 /* Shine effect */
@@ -310,8 +322,11 @@ body {
   pointer-events: none;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .rsvp-btn:hover::after {
   left: 120%;
+}
 }
 
 
@@ -375,7 +390,14 @@ body {
   text-decoration: none;
 }
 
-.hero-info a:hover,
+@media (hover: hover) and (pointer: fine) {
+
+.hero-info a:hover {
+  color: #f0b429;
+  text-decoration: underline;
+}
+}
+
 .hero-info a:focus-visible {
   color: #f0b429;
   text-decoration: underline;
@@ -394,9 +416,12 @@ body {
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .copy-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   transform: scale(1.1);
+}
 }
 
 .copy-btn svg {
@@ -428,9 +453,12 @@ body {
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .attendance-summary:hover {
   border-color: #f0b429;
   transform: translateY(-2px);
+}
 }
 
 .attendance-summary strong {
@@ -533,6 +561,25 @@ section ul {
   font-size: 0.85rem;
 }
 
+.gallery-page-toolbar {
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.gallery-year-control { display: flex; align-items: center; gap: 10px; }
+.gallery-page-toolbar .gallery-column-toggle { margin: 0; }
+.gallery-page-toolbar .gallery-column-toggle button { width: 44px; padding: 8px; }
+
+.gallery.gallery-columns .grid {
+  grid-template-columns: repeat(var(--gallery-columns), minmax(0, 1fr));
+}
+
+.gallery.gallery-columns .gallery-thumb img,
+.gallery.gallery-columns .gallery-placeholder {
+  height: auto;
+  aspect-ratio: 4 / 3;
+}
+
 .gallery-toolbar select {
   min-width: 150px;
   padding: 10px 12px;
@@ -600,9 +647,12 @@ section ul {
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .upload-card button:hover:not(:disabled) {
   background: #fff;
   transform: translateY(-1px);
+}
 }
 
 .upload-card button:disabled {
@@ -810,9 +860,12 @@ section ul {
   transition: transform 0.3s ease, filter 0.3s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .gallery-thumb:hover img {
   transform: scale(1.03);
   filter: brightness(1.08);
+}
 }
 
 .loading-grid {
@@ -868,12 +921,46 @@ section ul {
 }
 
 .photo-zoom-stage {
+  position: relative;
   flex: 1;
   min-height: 0;
   overflow: hidden;
   touch-action: none;
   border-radius: 6px;
 }
+
+.photo-transition-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.photo-transition-loading {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.photo-transition-error {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 12px;
+  margin: 0;
+  background: #222;
+  text-align: center;
+}
+
+.photo-caption {
+  padding-right: 36px;
+  text-align: left;
+  overflow-wrap: anywhere;
+  flex-shrink: 0;
+}
+
+.photo-zoom-controls button:disabled { opacity: 0.45; cursor: wait; }
 
 .zoomable-photo .photo-zoom-stage img {
   display: block;
@@ -984,14 +1071,20 @@ section ul {
   right: 20px;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .lightbox-close:hover,
 .lightbox-nav:hover {
   background: #f0b429;
   color: #111;
 }
+}
+
+@media (hover: hover) and (pointer: fine) {
 
 .lightbox-nav:hover {
   transform: translateY(-50%) scale(1.05);
+}
 }
 
 .load-more {
@@ -1006,8 +1099,11 @@ section ul {
   transition: background 0.3s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .load-more:hover {
   background: #fff;
+}
 }
 
 .load-more:disabled {
@@ -1090,9 +1186,12 @@ section ul {
   z-index: 2200;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .close:hover {
   color: #f0b429;
   transform: rotate(90deg);
+}
 }
 
 /* ========== Inputs & Buttons ========== */
@@ -1137,9 +1236,12 @@ section ul {
   font-size: 1.2rem;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .modal-content button[type="submit"]:hover {
   transform: scale(1.05);
   background: #fff;
+}
 }
 
 .secondary-btn {
@@ -1150,8 +1252,11 @@ section ul {
   border: 1px solid rgba(240, 180, 41, 0.55) !important;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .secondary-btn:hover {
   background: rgba(240, 180, 41, 0.12) !important;
+}
 }
 
 .profile-prompt {
@@ -1207,8 +1312,11 @@ section ul {
   transition: transform 0.3s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .attendance .list:hover {
   transform: translateY(-5px);
+}
 }
 
 .attendance .list h3 {
@@ -1503,9 +1611,12 @@ section ul {
   transition: color 0.25s ease, transform 0.2s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .year-link:hover {
   color: #fff;
   transform: translateY(-1px);
+}
 }
 
 /* Photo modal */
@@ -1577,9 +1688,12 @@ section ul {
   transition: transform 0.2s ease, color 0.3s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .modal .close:hover {
   color: #f0b429;
   transform: rotate(90deg);
+}
 }
 
 /* Mobile cards fallback (optional) */
@@ -1631,8 +1745,11 @@ section ul {
     right: 14px;
   }
 
+  @media (hover: hover) and (pointer: fine) {
+
   .lightbox-nav:hover {
     transform: scale(1.03);
+  }
   }
 }
 
@@ -1673,8 +1790,11 @@ section ul {
   transition: transform 0.2s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .time-box:hover {
   transform: translateY(-3px);
+}
 }
 
 .time-box .num {
@@ -1766,9 +1886,12 @@ section ul {
   transition: transform 0.2s ease, border-color 0.3s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .event-card:hover {
   transform: translateY(-2px);
   border-color: #fff;
+}
 }
 
 .event-date {
@@ -1981,9 +2104,12 @@ section ul {
   font-size: 1.05rem;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .detail-row p a:hover {
   text-decoration: underline;
   color: #fff;
+}
 }
 
 .copy-btn {
@@ -2000,9 +2126,12 @@ section ul {
   font-size: 1.1rem;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .copy-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   transform: scale(1.1);
+}
 }
 
 .dinner-photo {
@@ -2043,9 +2172,12 @@ section ul {
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+
 .location-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   transform: scale(1.1);
+}
 }
 
 .location-btn svg {

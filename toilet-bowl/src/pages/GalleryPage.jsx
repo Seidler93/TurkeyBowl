@@ -5,6 +5,7 @@ import useGalleryTimelines from "../utils/useGalleryTimelines";
 export default function GalleryPage() {
   const yearOptions = useGalleryTimelines();
   const [yearChoice, setSelectedYear] = useState(null);
+  const [columns, setColumns] = useState(2);
   const selectedYear = yearChoice ?? yearOptions[0].label;
   const selectedOption = yearOptions.find((option) => option.label === selectedYear) || yearOptions[0];
 
@@ -16,7 +17,8 @@ export default function GalleryPage() {
         <p>Pick a year and relive the catches, chaos, and sideline legends.</p>
       </div>
 
-      <div className="gallery-toolbar">
+      <div className="gallery-toolbar gallery-page-toolbar">
+        <div className="gallery-year-control">
         <label htmlFor="gallery-year">Year</label>
         <select
           id="gallery-year"
@@ -29,6 +31,12 @@ export default function GalleryPage() {
             </option>
           ))}
         </select>
+        </div>
+        <div className="record-view-toggle gallery-column-toggle" role="group" aria-label="Gallery columns">
+          {[1, 2, 3].map((count) => (
+            <button type="button" key={count} aria-pressed={columns === count} aria-label={`${count} column${count === 1 ? "" : "s"}`} title={`${count} column${count === 1 ? "" : "s"}`} onClick={() => setColumns(count)}>{count}</button>
+          ))}
+        </div>
       </div>
 
       <Gallery
@@ -40,6 +48,7 @@ export default function GalleryPage() {
         emptyMessage={`No photos have been added for ${selectedOption.label} yet.`}
         initialCount={50}
         loadMoreCount={50}
+        columns={columns}
       />
     </>
   );

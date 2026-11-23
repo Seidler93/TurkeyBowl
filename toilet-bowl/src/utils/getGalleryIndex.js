@@ -18,7 +18,7 @@ function mapGalleryPhoto(photoDoc) {
     year: data.year,
     fileName: data.fileName,
     thumbUrl: data.thumbUrl,
-    fullUrl: data.fullUrl || data.thumbUrl,
+    fullUrl: data.fullUrl || "",
     fullPath: data.fullPath,
     sortOrder: data.sortOrder,
   };
