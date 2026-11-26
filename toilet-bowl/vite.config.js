@@ -29,7 +29,7 @@ export default defineConfig({
       clientsClaim: true,
       cleanupOutdatedCaches: true,
       navigateFallback: '/index.html',
-      globPatterns: ['**/*.{js,css,html,svg,ico}', 'pwa-*.png', 'apple-touch-icon.png', 'tb3.png', 'pregame-dinner.jpg'],
+      globPatterns: ['**/*.{js,css,html,svg,ico}', 'pwa-*.png', 'apple-touch-icon.png', 'tb3.png', 'pregame-dinner.jpg', 'shop-tshirt-2027.jpg'],
     },
   })],
 })

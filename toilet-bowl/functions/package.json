@@ -1,0 +1,16 @@
+{
+  "name": "turkey-bowl-functions",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "test": "node --test cart.test.js"
+  },
+  "dependencies": {
+    "firebase-functions": "^7.4.0",
+    "stripe": "^23.2.0"
+  }
+}

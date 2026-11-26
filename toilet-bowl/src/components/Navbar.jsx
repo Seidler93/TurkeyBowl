@@ -1,8 +1,21 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import logo from "/tb3.png";
 
 const Navbar = ({ onNavigate }) => {
   const [open, setOpen] = useState(false);
+  const toggleButton = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        toggleButton.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [open]);
 
   const scrollTo = (id) => {
     if (window.location.pathname !== "/") {
@@ -23,7 +36,8 @@ const Navbar = ({ onNavigate }) => {
         <img src={logo} alt="Toilet Bowl Logo" className="nav-logo" />
         <span className="nav-title">Toilet Bowl</span>
       </button>
-      <div className={`menu ${open ? "open" : ""}`}>
+      {open && <button className="menu-backdrop" aria-label="Close menu" tabIndex={-1} onClick={() => setOpen(false)} />}
+      <div id="site-menu" className={`menu ${open ? "open" : ""}`} inert={!open}>
         <button onClick={() => scrollTo("about")}>About</button>
         <button onClick={() => scrollTo("details")}>Details</button>
         <button
@@ -42,6 +56,10 @@ const Navbar = ({ onNavigate }) => {
           onNavigate("/winners");
           setOpen(false);
         }}>The Record Book</button>
+        <button onClick={() => {
+          onNavigate("/shop");
+          setOpen(false);
+        }}>Shop</button>
         <button
           onClick={() => {
             onNavigate("/upload");
@@ -59,9 +77,11 @@ const Navbar = ({ onNavigate }) => {
       </div>
       <button
         className="hamburger"
+        ref={toggleButton}
         onClick={() => setOpen(!open)}
         aria-label="Toggle menu"
         aria-expanded={open}
+        aria-controls="site-menu"
       >
         <span />
         <span />

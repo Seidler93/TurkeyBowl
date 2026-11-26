@@ -6,6 +6,7 @@ import { chicagoDate } from "../utils/gameYear";
 import AdminAttendance from "../components/AdminAttendance";
 
 const ADMIN_PIN = "0526";
+const TEAM_OPTIONS = ["Beets", "Pics"];
 
 export default function AdminPage() {
   const currentYear = Number(chicagoDate().slice(0, 4));
@@ -41,7 +42,7 @@ export default function AdminPage() {
         let url = data.photoUrl || "";
         if (!url && data.photoPath) url = await getDownloadURL(ref(storage, data.photoPath));
         if (!cancelled) {
-          setTeam(data.team || "");
+          setTeam(TEAM_OPTIONS.find((option) => option.toLowerCase() === String(data.team || "").trim().toLowerCase()) || "");
           setScore(data.score || "");
           setExistingPhoto(url);
           setLoadedYear(year);
@@ -59,7 +60,7 @@ export default function AdminPage() {
 
   async function saveYear(event) {
     event.preventDefault();
-    if (saving || loading || loadedYear !== year || !team.trim() || !score.trim()) return;
+    if (saving || loading || loadedYear !== year || !TEAM_OPTIONS.includes(team) || !score.trim()) return;
     if (!photo && !existingPhoto) {
       setError("Choose a group photo for this year.");
       return;
@@ -119,8 +120,15 @@ export default function AdminPage() {
             {Array.from({ length: currentYear - 2023 + 1 }, (_, index) => currentYear - index).map((value) => <option key={value} value={value}>{value}</option>)}
           </select>
           {loading && <p role="status">Loading record...</p>}
-          <label htmlFor="record-team">Winning team</label>
-          <input id="record-team" value={team} onChange={(event) => setTeam(event.target.value)} disabled={loading || saving} required />
+          <fieldset className="team-toggle" disabled={loading || saving}>
+            <legend>Winning team</legend>
+            {TEAM_OPTIONS.map((option) => (
+              <span className="team-toggle-option" key={option}>
+                <input id={`record-team-${option.toLowerCase()}`} type="radio" name="winning-team" value={option} checked={team === option} onChange={() => setTeam(option)} required />
+                <label htmlFor={`record-team-${option.toLowerCase()}`}>{option}</label>
+              </span>
+            ))}
+          </fieldset>
           <label htmlFor="record-score">Score</label>
           <input id="record-score" placeholder="35-21" value={score} onChange={(event) => setScore(event.target.value)} disabled={loading || saving} required />
           <label htmlFor="record-photo">Group photo</label>

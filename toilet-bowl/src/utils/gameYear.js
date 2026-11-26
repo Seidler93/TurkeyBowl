@@ -16,7 +16,8 @@ export function chicagoDate(now = new Date()) {
 export function getGameYear(now = new Date()) {
   const localDate = chicagoDate(now);
   const year = Number(localDate.slice(0, 4));
-  return localDate > thanksgivingDate(year) ? year + 1 : year;
+  const upcomingYear = localDate > thanksgivingDate(year) ? year + 1 : year;
+  return Math.max(2027, upcomingYear);
 }
 
 export function gameDateLabel(year) {

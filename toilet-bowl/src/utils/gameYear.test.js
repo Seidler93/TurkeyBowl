@@ -9,10 +9,16 @@ test("Thanksgiving is the fourth Thursday, including years with five Thursdays",
   assert.equal(gameDateLabel(2027), "Thursday, November 25, 2027");
 });
 
-test("signup year rolls over at Chicago midnight after Thanksgiving", () => {
-  assert.equal(getGameYear(new Date("2026-11-27T05:59:59Z")), 2026);
+test("2027 is the active season now and remains active through its game day", () => {
+  assert.equal(getGameYear(new Date("2026-11-26T12:00:00Z")), 2027);
+  assert.equal(getGameYear(new Date("2026-11-27T05:59:59Z")), 2027);
   assert.equal(getGameYear(new Date("2026-11-27T06:00:00Z")), 2027);
   assert.equal(getGameYear(new Date("2027-01-01T00:00:00Z")), 2027);
   assert.equal(getGameYear(new Date("2027-07-01T12:00:00Z")), 2027);
+});
+
+test("future seasons still roll over at Chicago midnight after Thanksgiving", () => {
+  assert.equal(getGameYear(new Date("2027-11-26T05:59:59Z")), 2027);
   assert.equal(getGameYear(new Date("2027-11-26T06:00:00Z")), 2028);
+  assert.equal(getGameYear(new Date("2028-11-24T06:00:00Z")), 2029);
 });

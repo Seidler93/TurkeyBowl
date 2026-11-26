@@ -15,6 +15,8 @@ import UploadPhotosPage from "./pages/UploadPhotosPage";
 import WinnersPage from "./pages/WinnersPage";
 import RulesPage from "./pages/RulesPage";
 import AdminPage from "./pages/AdminPage";
+import ShopPage from "./pages/ShopPage";
+import useGameYear from "./utils/useGameYear";
 import "./styles/main.css";
 
 const customPages = {
@@ -23,6 +25,7 @@ const customPages = {
   "/winners": WinnersPage,
   "/rules": RulesPage,
   "/admin": AdminPage,
+  "/shop": ShopPage,
 };
 
 function getPath() {
@@ -30,8 +33,14 @@ function getPath() {
 }
 
 function App() {
+  const gameYear = useGameYear();
+  const copyrightYear = new Date().getFullYear();
   const [showRSVP, setShowRSVP] = useState(false);
   const [path, setPath] = useState(getPath);
+
+  useEffect(() => {
+    document.title = `Toilet Bowl ${gameYear}`;
+  }, [gameYear]);
 
   const navigate = (nextPath) => {
     window.history.pushState({}, "", nextPath);
@@ -73,7 +82,7 @@ function App() {
         <main className="page-shell">
           <CustomPage />
         </main>
-        <footer className="footer">Copyright 2026 Toilet Bowl - Built by AJ</footer>
+        <footer className="footer">Copyright {copyrightYear} Toilet Bowl - Built by AJ</footer>
         {showRSVP && <RSVPForm onClose={() => setShowRSVP(false)} />}
       </>
     );
@@ -94,7 +103,7 @@ function App() {
         padding="fix"
       />
       <Attendance />
-      <footer className="footer">Copyright 2026 Toilet Bowl - Built by AJ</footer>
+      <footer className="footer">Copyright {copyrightYear} Toilet Bowl - Built by AJ</footer>
       {showRSVP && <RSVPForm onClose={() => setShowRSVP(false)} />}
     </>
   );
