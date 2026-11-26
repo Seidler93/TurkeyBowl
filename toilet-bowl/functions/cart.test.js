@@ -5,12 +5,12 @@ import { normalizeCart, cartTotal } from "./cart.js";
 test("mixed-size totals use the fixed server price and ignore supplied prices", () => {
   const cart = normalizeCart([{ size: "XL", quantity: 2, price: 1 }, { size: "M", quantity: 1, amount: 0 }]);
   assert.deepEqual(cart, [{ style: "green", size: "M", quantity: 1 }, { style: "green", size: "XL", quantity: 2 }]);
-  assert.equal(cartTotal(cart), 7500);
+  assert.equal(cartTotal(cart), 6000);
 });
 test("keeps styles separate and rejects unknown styles", () => {
   const cart = normalizeCart([{ style: "green", size: "M", quantity: 1 }, { style: "black", size: "M", quantity: 2 }]);
   assert.equal(cart.length, 2);
-  assert.equal(cartTotal(cart), 7500);
+  assert.equal(cartTotal(cart), 6000);
   assert.throws(() => normalizeCart([{ style: "red", size: "M", quantity: 1 }]));
 });
 test("rejects invalid carts and quantities", () => {

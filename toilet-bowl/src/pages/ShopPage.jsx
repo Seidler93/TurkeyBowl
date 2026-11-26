@@ -80,9 +80,8 @@ export default function ShopPage() {
           <fieldset className="shop-shirt-options">
             <legend>Shirt</legend>
             {SHIRT_STYLES.map((style) => (
-              <label key={style.id}>
-                <input type="radio" name="shirt-style" value={style.id} checked={selectedStyle === style.id} disabled={checkingOut} onChange={() => { setSelectedStyle(style.id); setMessage(""); }} />
-                <span>{style.label}</span>
+              <label key={style.id} className={`shop-shirt-swatch shop-shirt-swatch-${style.id}`} title={style.label}>
+                <input type="radio" name="shirt-style" aria-label={style.label} value={style.id} checked={selectedStyle === style.id} disabled={checkingOut} onChange={() => { setSelectedStyle(style.id); setMessage(""); }} />
               </label>
             ))}
           </fieldset>
@@ -98,7 +97,7 @@ export default function ShopPage() {
         </div>
         <div className="shop-product-info">
           <p className="eyebrow">Game-day gear</p><h2>2027 Turkey Bowl T-shirt</h2>
-          <p className="shop-price">$25 <span>USD / shirt</span></p>
+          <p className="shop-price">{money(SHIRT_PRICE_CENTS)} <span>USD / shirt</span></p>
           <p>Pick up on game day.</p>
           <p className="shop-contact">Questions? Contact AJ at <a href="tel:+12246605288">224-660-5288</a>.</p>
         </div>

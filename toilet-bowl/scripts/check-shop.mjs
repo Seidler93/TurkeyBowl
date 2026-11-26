@@ -11,10 +11,18 @@ try {
     await page.goto(`${url}/shop`, { waitUntil: 'domcontentloaded' });
     await page.getByRole('heading', { name: '2027 Turkey Bowl T-shirt' }).waitFor();
     await page.waitForFunction(() => document.querySelector('.shop-product-photo img')?.naturalWidth > 0);
-    assert.match(await page.locator('.shop-price').innerText(), /25/);
+    assert.match(await page.locator('.shop-price').innerText(), /20\.00/);
     await page.getByText('Pick up on game day.', { exact: true }).waitFor();
     assert.match(await page.locator('.shop-contact').innerText(), /Contact AJ at 224-660-5288/);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+    const swatches = await page.locator('.shop-shirt-swatch').evaluateAll((elements) => elements.map((element) => {
+      const { x, y, width, height } = element.getBoundingClientRect();
+      return { x, y, width, height };
+    }));
+    assert.equal(swatches.length, 2);
+    assert.equal(swatches[0].y, swatches[1].y);
+    assert.ok(swatches.every((swatch) => swatch.width === 44 && swatch.height === 44));
+    assert.ok(swatches[1].x > swatches[0].x);
     assert.equal(await page.getByRole('button', { name: 'Add to Cart', exact: true }).isDisabled(), true);
     for (const size of ['S', 'M', 'L', 'XL', '2XL', '3XL']) {
       await page.getByLabel('Size', { exact: true }).selectOption(size);
@@ -25,28 +33,28 @@ try {
     await page.getByRole('button', { name: 'Add to Cart', exact: true }).click();
     await page.getByLabel('Size', { exact: true }).selectOption('XL');
     await page.getByRole('button', { name: 'Add to Cart', exact: true }).click();
-    assert.match(await page.locator('.shop-cart-summary').innerText(), /75\.00/);
+    assert.match(await page.locator('.shop-cart-summary').innerText(), /60\.00/);
     assert.equal(await page.locator('.shop-cart-items li').count(), 2);
     assert.equal(await page.getByRole('button', { name: 'Checkout coming closer to the 2027 game', exact: true }).isDisabled(), true);
     await page.getByRole('button', { name: 'Decrease green M quantity', exact: true }).click();
-    assert.match(await page.locator('.shop-cart-summary').innerText(), /50\.00/);
+    assert.match(await page.locator('.shop-cart-summary').innerText(), /40\.00/);
     await page.getByRole('button', { name: 'Increase green XL quantity', exact: true }).click();
     await page.getByRole('button', { name: 'Remove green size M', exact: true }).click();
     await page.reload({ waitUntil: 'domcontentloaded' });
-    assert.match(await page.locator('.shop-cart-summary').innerText(), /50\.00/);
+    assert.match(await page.locator('.shop-cart-summary').innerText(), /40\.00/);
     assert.equal(await page.locator('.shop-cart-items li').count(), 1);
     await page.getByRole('button', { name: 'Decrease green XL quantity', exact: true }).click();
     assert.equal(await page.getByRole('button', { name: 'Checkout coming closer to the 2027 game', exact: true }).isDisabled(), true);
     await page.getByRole('radio', { name: 'Black / Beets', exact: true }).check();
     await page.waitForFunction(() => {
       const image = document.querySelector('.shop-product-photo img');
-      return image?.src.endsWith('shop-tshirt-2027-black.jpg') && image.complete && image.naturalWidth > 0;
+      return image?.src.endsWith('shop-beets-2027-v2.png') && image.complete && image.naturalWidth > 0;
     });
     await page.getByLabel('Size', { exact: true }).selectOption('XL');
     await page.getByRole('button', { name: 'Add to Cart', exact: true }).click();
     assert.equal(await page.locator('.shop-cart-items li').count(), 2);
     assert.match(await page.locator('.shop-cart-items').innerText(), /Black \/ Beets/);
-    assert.match(await page.locator('.shop-cart-summary').innerText(), /50\.00/);
+    assert.match(await page.locator('.shop-cart-summary').innerText(), /40\.00/);
     await page.reload({ waitUntil: 'domcontentloaded' });
     assert.equal(await page.locator('.shop-cart-items li').count(), 2);
     await page.getByRole('button', { name: 'Remove black size XL', exact: true }).click();

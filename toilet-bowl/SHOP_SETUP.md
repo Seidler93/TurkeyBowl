@@ -1,10 +1,10 @@
 # Shirt Shop
 
-The `/shop` page advertises one Toilet Bowl T-shirt for $25 USD, for pickup at the game. The image and product details are temporary.
+The `/shop` page advertises one Toilet Bowl T-shirt for $20 USD, for pickup at the game. The image and product details are temporary. Checkout is disabled until closer to the 2027 game.
 
 ## Stripe Connection
 
-The inline cart supports S, M, L, XL, 2XL, and 3XL, quantity adjustment, removal, and a $25-per-shirt total. It is saved on the buyer's device. A one-shirt cart can use the existing size-prefilled Stripe Payment Link. Mixed-size and multi-shirt carts require the secure backend below. Never put a secret API key in a browser-facing environment variable.
+The inline cart supports both shirt styles in S, M, L, XL, 2XL, and 3XL, quantity adjustment, removal, and a $20-per-shirt total. It is saved on the buyer's device. The shared server price is also $20. Existing Stripe Payment Links below still use the old $25 price and must be replaced before checkout is enabled. Mixed-size and multi-shirt carts require the secure backend below. Never put a secret API key in a browser-facing environment variable.
 
 Each link uses the same $25 USD one-time T-shirt price, buyer name and email collection, and a required shirt-size field. No shipping address or shipping charge is collected. Buyers pick up at Newton Park at the game. Check the order's paid status in Stripe before handing over a shirt.
 
@@ -22,11 +22,15 @@ This backend has not been deployed. The project's Cloud Functions API is disable
 4. Deploy the `shop` Functions codebase after installing dependencies in `functions/`.
 5. Set the public build variable `VITE_CART_CHECKOUT_ENDPOINT=https://us-central1-turkeybowl-743d7.cloudfunctions.net/createShopCheckout`, rebuild, and verify a sandbox checkout before publishing combined checkout.
 
-The size-specific payment links remain available for one-shirt carts until combined checkout is enabled. Do not assume the temporary Stripe CLI login is a persistent backend credential.
+Do not enable the existing $25 size-specific payment links for the $20 shirts. Replace them or use the combined checkout backend at the current shared price before enabling checkout. Do not assume the temporary Stripe CLI login is a persistent backend credential.
 
 ## Temporary Mockup
 
-Current asset: `public/shop-tshirt-2027.jpg`, supplied by the user. It shows the green 2027 Turkey Bowl shirt with a Pics flag. The page explicitly labels it a design preview.
+Current assets: `public/shop-pics-2027-v2.jpg` (the user's updated green Pics mockup) and `public/shop-beets-2027-v2.png` (black Beets mockup edited with the built-in image-generation tool to match the green print's scale and position). Both keep their light studio backgrounds. The page explicitly labels them as design previews.
+
+Black mockup edit prompt:
+
+> Use case: precise-object-edit. Produce ONE edited black T-shirt product mockup, portrait 1024x1280. Image 1 is the BLACK BEETS shirt EDIT TARGET; image 2 is a GREEN PICS shirt used ONLY as a reference for the printed logo's physical size and placement. Keep image 1 shirt framing, black fabric, collar, sleeves, folds, lighting, white studio background unchanged. Change ONLY the scale and vertical placement of its entire existing chest print, uniformly as one intact graphic, so it matches the logo bounding-box size and placement on image 2. At 1024x1280, target graphic spans approximately x330 to710 and y260 to705 (about380px wide,445px tall). Keep proportions natural, do not stretch. Preserve the black shirt's exact BEETS flag, yellow accents, turkey mascot, white toilet, number 27, text 2027 and TURKEY BOWL; do not substitute the green shirt's PICS design or recolor the shirt. No extra graphics, no labels outside shirt. Output only the full black shirt, NOT a side-by-side collage.
 
 The earlier concept at `public/shop-tshirt.jpg` was generated with the built-in image-generation tool using `public/tb3.png` as the logo reference, and is no longer displayed.
 

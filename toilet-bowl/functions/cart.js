@@ -1,10 +1,10 @@
 export const SHIRT_SIZES = ["S", "M", "L", "XL", "2XL", "3XL"];
 export const SHIRT_STYLES = [
-  { id: "green", label: "Green / Pics", image: "/shop-tshirt-2027.jpg" },
-  { id: "black", label: "Black / Beets", image: "/shop-tshirt-2027-black.jpg" },
+  { id: "green", label: "Green / Pics", image: "/shop-pics-2027-v2.jpg" },
+  { id: "black", label: "Black / Beets", image: "/shop-beets-2027-v2.png" },
 ];
 export const cartItemKey = (item) => `${item.style || "green"}-${item.size}`;
-export const SHIRT_PRICE_CENTS = 2500;
+export const SHIRT_PRICE_CENTS = 2000;
 export const MAX_PER_SIZE = 10;
 export const MAX_CART_QUANTITY = 50;
 
