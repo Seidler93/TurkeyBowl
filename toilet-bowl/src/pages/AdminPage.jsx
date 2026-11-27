@@ -4,6 +4,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { db, storage } from "../firebase";
 import { chicagoDate } from "../utils/gameYear";
 import AdminAttendance from "../components/AdminAttendance";
+import AdminPhotoUploadSettings from "../components/AdminPhotoUploadSettings";
 
 const ADMIN_PIN = "0526";
 const TEAM_OPTIONS = ["Beets", "Pics"];
@@ -140,6 +141,7 @@ export default function AdminPage() {
           {message && <p role="status">{message}</p>}
         </form>
       )}
+      {unlocked && <AdminPhotoUploadSettings />}
       {unlocked && <AdminAttendance />}
     </div>
   );

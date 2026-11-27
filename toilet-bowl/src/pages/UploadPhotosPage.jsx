@@ -4,6 +4,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { db, storage } from "../firebase";
 import { createThumbnail } from "../utils/createThumbnail";
 import useGalleryTimelines from "../utils/useGalleryTimelines";
+import usePhotoUploadSettings from "../utils/usePhotoUploadSettings";
 
 const ACCESS_CODE = "turkey";
 
@@ -32,6 +33,7 @@ function uploadWithProgress(storageRef, file, metadata, onProgress) {
 
 export default function UploadPhotosPage() {
   const timelineOptions = useGalleryTimelines();
+  const { passwordless } = usePhotoUploadSettings();
   const [code, setCode] = useState("");
   const [unlocked, setUnlocked] = useState(false);
   const [timelineChoice, setSelectedTimeline] = useState(null);
@@ -40,6 +42,7 @@ export default function UploadPhotosPage() {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [progress, setProgress] = useState([]);
+  const canUpload = unlocked || passwordless;
 
   const selectedOption = useMemo(
     () => timelineOptions.find((option) => option.timeline === selectedTimeline) || timelineOptions[0],
@@ -71,7 +74,7 @@ export default function UploadPhotosPage() {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (files.length === 0 || uploading) return;
+    if (!canUpload || files.length === 0 || uploading) return;
 
     setUploading(true);
     setMessage("");
@@ -154,11 +157,12 @@ export default function UploadPhotosPage() {
         <p>Add photos to the gallery. Full images and thumbnails will be uploaded automatically.</p>
       </div>
 
-      {!unlocked ? (
+      {!canUpload && !uploading ? (
         <form className="upload-card" onSubmit={handleCodeSubmit}>
           <label htmlFor="upload-code">Enter upload code</label>
           <input
             id="upload-code"
+            type="password"
             value={code}
             onChange={(e) => setCode(e.target.value)}
             placeholder="Code"

@@ -705,6 +705,9 @@ section ul {
   font-size: 1rem;
 }
 
+.upload-card .photo-upload-setting { display: flex; align-items: center; gap: 12px; min-height: 44px; }
+.upload-card .photo-upload-setting input { width: 20px; height: 20px; margin: 0; accent-color: #f0b429; }
+
 .upload-card input[type="file"] {
   cursor: pointer;
 }
